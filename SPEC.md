@@ -19,7 +19,7 @@ replacement, for formal assertion/provenance standards such as W3C PROV,
 nanopublications, SEPIO, and ECO.
 
 `trust.md` is the epistemic provenance companion to
-[`fair.md`](https://github.com/Neuronautix/fair-md): fair.md asks *"can I find
+[`fair.md`](https://github.com/Neuronautix/FAIR.md): fair.md asks *"can I find
 and reuse this?"*; trust.md asks *"how much should I trust it, and why?"*.
 
 ---
@@ -173,7 +173,7 @@ license: "Apache-2.0"
 - **Type:** mapping
 - **Required:** yes
 - **Description:** Paths to companion artifacts. At minimum, the `fair` key
-  SHOULD be present.
+  SHOULD be present. The `companions` object is REQUIRED; the `fair` value SHOULD be set but MAY be `null` if no `fair.md` exists yet.
 - **Sub-fields:**
 
 | Sub-field | Type | Required | Description |
@@ -335,6 +335,8 @@ categories:
 | 50–69 | Moderate | Reasonable inference, or consensus without a pinpoint citation |
 | 30–49 | Tentative | Plausible forward-looking claim with partial support |
 | 0–29 | Speculative | Normative/opinion/vision with little direct evidence |
+
+> **Community consensus note:** The five band boundaries (90/70/50/30) are a proposed default chosen to cover the full 0–100 range in roughly equal steps. Feedback and domain-specific proposals for refining the thresholds are explicitly welcomed — open an issue with `band-consensus` label. The band labels and meanings may be adjusted by adopters for their domain; keep the count at five for interoperability.
 
 ##### `epistemic_model.encoding` (optional but recommended)
 
@@ -503,6 +505,7 @@ A **warning** (non-blocking) SHOULD be issued if:
 - The canonical five category IDs (`cited`, `consensus`, `inference`,
   `hypothesis`, `view`) are not all present.
 - `corpus.average_trust` is outside the range 0–100.
+- `epistemic_model.confidence_scale.bands` does not cover the full 0–100 range without gaps or overlaps (the schema cannot enforce contiguity; use the validator CLI).
 
 ---
 

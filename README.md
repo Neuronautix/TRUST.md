@@ -7,7 +7,7 @@ and how much confidence to place in it.
 
 **Status: v0.1 — proposed convention**
 
-> Companion convention: [fair.md](../fair-md/README.md) — declares the FAIR
+> Companion convention: [fair.md](https://github.com/Neuronautix/FAIR.md) — declares the FAIR
 > posture (Findable, Accessible, Interoperable, Reusable) of the data a
 > repository holds.
 
@@ -150,7 +150,7 @@ A copy is included in this repository as
    `epistemic_model.encoding` — so the `corpus` and `artifacts` profiles can be
    derived automatically rather than manually asserted.
 5. **Serve** the file at `https://yourdomain/trust.md`.
-6. **Pair it with [`fair.md`](../fair-md/README.md)** — trust.md covers *how
+6. **Pair it with [`fair.md`](https://github.com/Neuronautix/FAIR.md)** — trust.md covers *how
    trustworthy* the content is; fair.md covers *how findable and reusable* it is.
 7. **Review** periodically and update `last_reviewed`.
 
