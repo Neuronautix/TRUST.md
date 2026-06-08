@@ -189,11 +189,11 @@ def validate(path):
     # Rule 4: trust_md_version == "0.1"
     # ------------------------------------------------------------------
     version = data.get("trust_md_version")
-    if str(version) == "0.1":
-        print("[OK]    Rule 4: trust_md_version == \"0.1\"")
+    if str(version) in ("0.1", "0.2"):
+        print(f"[OK]    Rule 4: trust_md_version == \"{version}\"")
     else:
-        err(f"trust_md_version must be \"0.1\", got: {version!r}")
-        print(f"[ERROR] Rule 4: trust_md_version must be \"0.1\", got: {version!r}")
+        err(f"trust_md_version must be \"0.1\" or \"0.2\", got: {version!r}")
+        print(f"[ERROR] Rule 4: trust_md_version must be \"0.1\" or \"0.2\", got: {version!r}")
 
     # ------------------------------------------------------------------
     # Rule 5: produced_by.humans has at least one entry

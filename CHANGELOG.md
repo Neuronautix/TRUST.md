@@ -6,6 +6,37 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.2] — 2026-06-08
+
+### Added
+
+- `tools/validate.py` — standalone Python 3 validator (requires only PyYAML) implementing all 15 MUST rules and 7 WARNING checks from SPEC.md §7, including confidence-band contiguity. Exit code 1 on errors, 0 on warnings-only or clean pass.
+- `.github/workflows/validate.yml` — CI workflow that installs PyYAML and runs the validator against all `examples/*.trust.md` on every push and pull request.
+- `.gitignore` — excludes `.claude/` tooling artefacts and Python `__pycache__`.
+
+### Changed
+
+- JSON Schema (`schema/trust.schema.json`):
+  - `$id` corrected to `Neuronautix/TRUST.md` and versioned to `/blob/v0.2/`.
+  - `confidence_scale.range`: now uses `prefixItems` with `const: 0` / `const: 100` to strictly enforce `[0, 100]`.
+  - `companions.additionalProperties`: now validates additional companion keys as root-relative paths or `null` (was `true`).
+  - `last_reviewed`: added `"format": "date"` hint alongside the regex pattern.
+- SPEC.md:
+  - Version bumped to v0.2; date updated to 2026-06-08.
+  - Validation rule 4: accepts `"0.1"` or `"0.2"` (0.x backward compatibility).
+  - §5.1 `companions`: clarified that the object is REQUIRED but `fair` MAY be `null`.
+  - §5.1 confidence scale: added community consensus note on band thresholds.
+  - §7: added contiguity warning for `confidence_scale.bands`.
+- README: status updated to v0.2.
+- Template (`TRUST.md`): `trust_md_version` updated to `"0.2"`.
+
+### Fixed
+
+- All internal URLs corrected from `Neuronautix/trust-md` (hyphen) to `Neuronautix/TRUST.md` (dot) across `TRUST.md`, `README.md`, `SPEC.md`, `CHANGELOG.md`, and `schema/trust.schema.json`.
+- `FAIR.md` companion link in `README.md` changed from a relative monorepo path to the correct absolute URL `https://github.com/Neuronautix/FAIR.md`.
+
+---
+
 ## [0.1] — 2026-06-06
 
 ### Added
@@ -29,4 +60,5 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - README with lineage, 30-second example, and adoption instructions
 - LICENSE (Apache-2.0)
 
+[0.2]: https://github.com/Neuronautix/TRUST.md/releases/tag/v0.2
 [0.1]: https://github.com/Neuronautix/TRUST.md/releases/tag/v0.1

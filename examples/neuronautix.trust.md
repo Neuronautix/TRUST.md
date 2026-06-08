@@ -13,7 +13,7 @@
 # nanopublications (assertion + provenance + pubinfo), SEPIO (Monarch Initiative),
 # the Evidence & Conclusion Ontology (ECO), and schema.org ClaimReview.
 
-trust_md_version: "0.1"
+trust_md_version: "0.2"
 title: "Neuronautix — Trust & Epistemic Provenance Declaration"
 description: >
   How knowledge and inferences in this repository are produced, graded, and
@@ -116,7 +116,7 @@ limitations:
   - "Self-declared; not independently audited."
   - "A single 0–100 score currently conflates evidence strength and stated confidence (a planned second axis would separate them)."
 
-last_reviewed: "2026-06-06"
+last_reviewed: "2026-06-08"
 ---
 
 # trust.md — Neuronautix Trust & Epistemic Provenance

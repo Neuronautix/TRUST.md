@@ -1,7 +1,7 @@
-# trust.md — Formal Specification v0.1
+# trust.md — Formal Specification v0.2
 
-**Status:** Proposed convention — v0.1
-**Date:** 2026-06-06
+**Status:** Proposed convention — v0.2
+**Date:** 2026-06-08
 **Author:** Damien Huzard, PhD (ORCID [0000-0003-4820-7951](https://orcid.org/0000-0003-4820-7951)), Neuronautix
 **License:** Apache-2.0
 **Reference implementation:** <https://neuronautix.com/trust.md>
@@ -481,7 +481,7 @@ A `trust.md` file is considered **conformant** if:
 1. The file is valid UTF-8.
 2. The YAML front matter parses without errors.
 3. All REQUIRED fields (Section 5.1) are present.
-4. `trust_md_version` is `"0.1"`.
+4. `trust_md_version` is `"0.1"` or `"0.2"` (0.x files are backward-compatible).
 5. `produced_by.humans` contains at least one entry.
 6. `produced_by.agents` is present (may be `[]`).
 7. Each agent `oversight` value is one of: `human-reviewed`, `human-in-the-loop`,
@@ -525,7 +525,7 @@ A repository claiming trust.md conformance SHOULD include in its README or
 documentation a statement such as:
 
 > This repository provides a `trust.md` epistemic trust manifest conforming to
-> the trust.md specification v0.1. See [trust.md](https://yourdomain/trust.md).
+> the trust.md specification v0.2. See [trust.md](https://yourdomain/trust.md).
 
 ---
 
@@ -545,5 +545,16 @@ documentation a statement such as:
 
 ## 10. Changelog
 
+- **v0.2 (2026-06-08)** — additive improvements; backward-compatible with v0.1:
+  - JSON Schema: enforce `confidence_scale.range` as exactly `[0, 100]` via
+    `prefixItems`; tighten `companions` `additionalProperties` to root-relative
+    paths; add `format: date` hint to `last_reviewed`; version `$id` to `v0.2`.
+  - Added `tools/validate.py` — standalone Python validator implementing all 15
+    MUST rules and 7 WARNING checks including confidence-band contiguity.
+  - Added `.github/workflows/validate.yml` — CI that runs the validator against
+    all `examples/` on every push and pull request.
+  - Spec clarifications: `companions.fair` MUST/SHOULD language; community
+    consensus note on confidence-band thresholds; contiguity warning in §7.
+  - Fixed all internal URLs from `Neuronautix/trust-md` to `Neuronautix/TRUST.md`.
 - **v0.1 (2026-06-06)** — initial specification, derived from the reference
   implementation at <https://neuronautix.com/trust.md>.
