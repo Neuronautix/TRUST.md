@@ -108,14 +108,18 @@ def check_band_coverage(bands):
     parsed.sort()
     if parsed[0][0] != 0:
         problems.append(f"Bands do not start at 0 (first start: {parsed[0][0]})")
-    expected_start = parsed[0][0]
+    # Bands use inclusive integer ranges: [0,29] and [30,49] are contiguous
+    # because 30 == 29 + 1. Check expected_start + 1 for the next lo.
+    expected_next = parsed[0][0]
     for lo, hi in parsed:
-        if lo > expected_start:
-            problems.append(f"Gap in confidence bands between {expected_start} and {lo}")
-        elif lo < expected_start:
+        if lo > expected_next:
+            problems.append(
+                f"Gap in confidence bands: {expected_next}-{lo - 1} not covered"
+            )
+        elif lo < expected_next:
             problems.append(f"Overlap in confidence bands at {lo}-{hi}")
-        expected_start = hi
-    if expected_start != 100:
+        expected_next = hi + 1
+    if expected_next - 1 != 100:
         problems.append(f"Bands do not end at 100 (last end: {expected_start})")
 
     return problems

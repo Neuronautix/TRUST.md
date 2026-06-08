@@ -20,8 +20,12 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml
 
-      - name: Validate template (TRUST.md)
-        run: python tools/validate.py TRUST.md
-
       - name: Validate reference implementation (examples/neuronautix.trust.md)
         run: python tools/validate.py examples/neuronautix.trust.md
+
+      - name: Validate all examples
+        run: |
+          for f in examples/*.trust.md; do
+            echo "--- $f ---"
+            python tools/validate.py "$f"
+          done
