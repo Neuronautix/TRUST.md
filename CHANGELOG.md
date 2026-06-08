@@ -29,4 +29,4 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - README with lineage, 30-second example, and adoption instructions
 - LICENSE (Apache-2.0)
 
-[0.1]: https://github.com/Neuronautix/trust-md/releases/tag/v0.1
+[0.1]: https://github.com/Neuronautix/TRUST.md/releases/tag/v0.1

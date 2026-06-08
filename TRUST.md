@@ -1,6 +1,6 @@
 ---
 # trust.md — a portable, human- and machine-readable EPISTEMIC TRUST manifest
-# Proposed convention (v0.1). Specification: https://github.com/Neuronautix/trust-md
+# Proposed convention (v0.1). Specification: https://github.com/Neuronautix/TRUST.md
 # Reference implementation: https://neuronautix.com/trust.md
 #
 # HOW TO USE THIS TEMPLATE
@@ -75,7 +75,7 @@ epistemic_model:
     - {id: "consensus",  label: "Established consensus",  definition: "Widely accepted domain knowledge / standard definitions"}
     - {id: "inference",  label: "Inference",             definition: "Reasoned from one or more sources; not stated verbatim"}
     - {id: "hypothesis", label: "Hypothesis",            definition: "Forward-looking or speculative claim"}
-    - {id: "view",       label: "<Author/Org> view",     definition: "Explicit interpretation, position, or normative conclusion"}
+    - {id: "view",       label: "<Author/Org> view",     definition: "Explicit interpretation, position, or normative conclusion"}  # ← Replace <Author/Org> with your project or organisation name (e.g. "Neuronautix view")
     # Add domain-specific categories here if needed, e.g.:
     # - {id: "model_output", label: "Model output", definition: "Produced by a computational model; not yet experimentally validated"}
   confidence_scale:
@@ -137,7 +137,7 @@ This file declares **how much you should trust the knowledge in this repository,
 and why**. The YAML block above is machine-readable; this prose is for people.
 
 It is a **proposed convention (v0.1)**, with the Neuronautix knowledge base as
-its reference implementation. See the [trust.md specification](https://github.com/Neuronautix/trust-md)
+its reference implementation. See the [trust.md specification](https://github.com/Neuronautix/TRUST.md)
 and the [reference implementation](https://neuronautix.com/trust.md).
 
 ## Why trust.md?
@@ -185,7 +185,7 @@ assertion/provenance stack:
 
 ## How to adopt trust.md
 
-See the [trust.md specification](https://github.com/Neuronautix/trust-md) and
+See the [trust.md specification](https://github.com/Neuronautix/TRUST.md) and
 pair this file with a **[`/fair.md`](/fair.md)** so readers get both halves:
 *can I find and reuse this?* (FAIR) and *how much should I trust it?* (trust).
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Neuronautix/trust-md/schema/trust.schema.json",
+  "$id": "https://github.com/Neuronautix/TRUST.md/blob/v0.1/schema/trust.schema.json",
   "title": "trust.md YAML front-matter schema",
   "description": "JSON Schema (draft 2020-12) for the YAML front matter of a trust.md file conforming to the trust.md specification v0.1. Apply to the parsed YAML object (the front-matter block between the --- delimiters).",
   "type": "object",
@@ -45,7 +45,9 @@
     },
     "companions": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": {
+        "$ref": "#/$defs/companionPath"
+      },
       "description": "Paths to companion artifacts.",
       "properties": {
         "fair": {
@@ -205,9 +207,13 @@
             },
             "range": {
               "type": "array",
-              "items": {"type": "integer"},
+              "prefixItems": [
+                {"type": "integer", "const": 0},
+                {"type": "integer", "const": 100}
+              ],
               "minItems": 2,
               "maxItems": 2,
+              "items": false,
               "description": "[min, max] of the confidence scale. MUST be [0, 100]."
             },
             "independent_of_category": {
@@ -347,6 +353,7 @@
     "last_reviewed": {
       "type": "string",
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "format": "date",
       "description": "ISO 8601 date (YYYY-MM-DD) of the last review."
     }
   },
