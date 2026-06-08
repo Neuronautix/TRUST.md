@@ -1,0 +1,7 @@
+# Claude Code internal tooling
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
