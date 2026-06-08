@@ -17,7 +17,7 @@
 # Aligns with: W3C PROV/PAV, nanopublications, SEPIO (Monarch Initiative),
 # Evidence & Conclusion Ontology (ECO), schema.org ClaimReview.
 
-trust_md_version: "0.1"
+trust_md_version: "0.2"
 title: "<Project Name> — Trust & Epistemic Provenance Declaration"
 description: >
   How knowledge and inferences in this repository are produced, graded, and

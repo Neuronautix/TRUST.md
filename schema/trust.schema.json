@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Neuronautix/TRUST.md/blob/v0.1/schema/trust.schema.json",
+  "$id": "https://github.com/Neuronautix/TRUST.md/blob/v0.2/schema/trust.schema.json",
   "title": "trust.md YAML front-matter schema",
-  "description": "JSON Schema (draft 2020-12) for the YAML front matter of a trust.md file conforming to the trust.md specification v0.1. Apply to the parsed YAML object (the front-matter block between the --- delimiters).",
+  "description": "JSON Schema (draft 2020-12) for the YAML front matter of a trust.md file conforming to the trust.md specification v0.2 (backward-compatible with v0.1). Apply to the parsed YAML object (the front-matter block between the --- delimiters).",
   "type": "object",
   "required": [
     "trust_md_version",
@@ -20,7 +20,7 @@
   "properties": {
     "trust_md_version": {
       "type": "string",
-      "enum": ["0.1"],
+      "enum": ["0.1", "0.2"],
       "description": "Version of the trust.md specification this file conforms to."
     },
     "title": {

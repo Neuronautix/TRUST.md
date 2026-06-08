@@ -5,7 +5,7 @@ drop at the root of any repository or website. One file tells readers — and
 machines — how the knowledge in a project was produced, how each claim is graded,
 and how much confidence to place in it.
 
-**Status: v0.1 — proposed convention**
+**Status: v0.2 — proposed convention**
 
 > Companion convention: [fair.md](https://github.com/Neuronautix/FAIR.md) — declares the FAIR
 > posture (Findable, Accessible, Interoperable, Reusable) of the data a
