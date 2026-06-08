@@ -1,5 +1,7 @@
 # trust.md
 
+**Traceable · Reviewed · Uncertainty-graded · Sourced · Transparent**
+
 A lightweight, human- and machine-readable **epistemic trust manifest** that you
 drop at the root of any repository or website. One file tells readers — and
 machines — how the knowledge in a project was produced, how each claim is graded,

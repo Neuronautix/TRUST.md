@@ -1,6 +1,7 @@
 ---
-# trust.md — a portable, human- and machine-readable EPISTEMIC TRUST manifest
-# Proposed convention (v0.1). Specification: https://github.com/Neuronautix/TRUST.md
+# trust.md — Traceable · Reviewed · Uncertainty-graded · Sourced · Transparent
+# A portable, human- and machine-readable EPISTEMIC TRUST manifest
+# Proposed convention (v0.2). Specification: https://github.com/Neuronautix/TRUST.md
 # Reference implementation: https://neuronautix.com/trust.md
 #
 # HOW TO USE THIS TEMPLATE

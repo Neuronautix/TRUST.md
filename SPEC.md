@@ -1,4 +1,5 @@
 # trust.md — Formal Specification v0.2
+*Traceable · Reviewed · Uncertainty-graded · Sourced · Transparent*
 
 **Status:** Proposed convention — v0.2
 **Date:** 2026-06-08
