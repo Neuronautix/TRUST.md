@@ -1,0 +1,27 @@
+name: Validate trust.md files
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Validate template (TRUST.md)
+        run: python tools/validate.py TRUST.md
+
+      - name: Validate reference implementation (examples/neuronautix.trust.md)
+        run: python tools/validate.py examples/neuronautix.trust.md
