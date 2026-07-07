@@ -9,7 +9,7 @@ and how much confidence to place in it.
 
 **Status: v0.2 — proposed convention**
 
-> Companion convention: [fair.md](https://github.com/Neuronautix/FAIR.md) — declares the FAIR
+> Companion convention: [FAIR.md](https://github.com/Neuronautix/FAIR.md) — declares the FAIR
 > posture (Findable, Accessible, Interoperable, Reusable) of the data a
 > repository holds.
 
@@ -19,14 +19,14 @@ and how much confidence to place in it.
 
 ```yaml
 ---
-trust_md_version: "0.1"
+TRUST_md_version: "0.1"
 title: "My Project — Trust & Epistemic Provenance Declaration"
 description: >
   How knowledge in this repository is produced, graded, and reviewed.
-canonical: "https://myproject.example.org/trust.md"
+canonical: "https://myproject.example.org/TRUST.md"
 license: "CC-BY-4.0"
 companions:
-  fair: "/fair.md"
+  fair: "/FAIR.md"
 
 produced_by:
   humans:
@@ -65,7 +65,7 @@ epistemic_model:
 corpus:
   notes_with_markup: 5
   total_claims: 120
-  average_trust: 72
+  average_: 72
   category_distribution: {cited: 65, inference: 30, view: 20, consensus: 3, hypothesis: 2}
 
 artifacts:
@@ -78,7 +78,7 @@ limitations:
 last_reviewed: "2026-06-06"
 ---
 
-# trust.md — My Project Trust Declaration
+# TRUST.md — My Project Trust Declaration
 
 This file declares how much you should trust the knowledge in this repository
 and why ...
@@ -86,7 +86,7 @@ and why ...
 
 ---
 
-## Why trust.md?
+## Why TRUST.md?
 
 Scientific writing — and now AI-assisted scientific writing — mixes *cited fact*,
 *reasoned inference*, *forward-looking hypothesis*, and *the author's own
@@ -95,7 +95,7 @@ models help draft more of the literature, the question **"what kind of statement
 is this, and how confident is the author?"** becomes urgent and, today, largely
 unanswerable from the page itself.
 
-`trust.md` answers it at the level of the whole repository:
+`TRUST.md` answers it at the level of the whole repository:
 
 - **Provenance of authorship** — which parts are human-written, which are
   AI-assisted, and what oversight applies.
@@ -103,45 +103,45 @@ unanswerable from the page itself.
 - **A corpus profile** — honest aggregate statistics, derivable directly from
   inline claim markup.
 
-### What trust.md is NOT
+### What TRUST.md is NOT
 
-`trust.md` is deliberately *distinct from* JournalList's **`trust.txt`**, which
+`TRUST.md` is deliberately *distinct from* JournalList's **`trust.txt`**, which
 declares an organisation's trusted *relationships* (memberships, ownership,
-vendors). `trust.md` is about the *epistemic status of the content itself* — what
+vendors). `TRUST.md` is about the *epistemic status of the content itself* — what
 kind of claims it makes and how well-supported they are.
 
 ### Lineage
 
-`trust.md` draws on a rich lineage of assertion and provenance vocabularies:
+`TRUST.md` draws on a rich lineage of assertion and provenance vocabularies:
 
-- **W3C PROV / PAV** — provenance and authoring of assertions; trust.md's
+- **W3C PROV / PAV** — provenance and authoring of assertions; TRUST.md's
   `produced_by` block maps to PROV-O agents and activities.
 - **Nanopublications** — the assertion + provenance + publication-info pattern;
-  trust.md's per-claim model is a pragmatic, web-native cousin.
+  TRUST.md's per-claim model is a pragmatic, web-native cousin.
 - **SEPIO (Monarch Initiative)** — Scientific Evidence and Provenance Information
   Ontology; the epistemic category model aligns with SEPIO's evidence typing.
 - **Evidence & Conclusion Ontology (ECO)** — formal evidence modelling; ECO codes
-  are a natural extension of trust.md's category IDs.
+  are a natural extension of TRUST.md's category IDs.
 - **schema.org ClaimReview** — a path to emit each graded claim as harvestable
-  JSON-LD; trust.md's inline encoding is designed with this in mind.
+  JSON-LD; TRUST.md's inline encoding is designed with this in mind.
 - **JournalList trust.txt** — the naming inspiration; explicitly distinct in scope.
 
 ---
 
 ## Reference implementation
 
-The canonical `trust.md` for the Neuronautix knowledge base lives at:
+The canonical `TRUST.md` for the Neuronautix knowledge base lives at:
 
-**<https://neuronautix.com/trust.md>**
+**<https://neuronautix.com/TRUST.md>**
 
 A copy is included in this repository as
-[`examples/neuronautix.trust.md`](examples/neuronautix.trust.md).
+[`examples/neuronautix.TRUST.md`](examples/neuronautix.TRUST.md).
 
 ---
 
-## How to adopt trust.md
+## How to adopt TRUST.md
 
-1. **Copy** [`trust.md`](trust.md) (the template in this repo) to the root of
+1. **Copy** [`TRUST.md`](TRUST.md) (the template in this repo) to the root of
    your repository or website.
 2. **Fill in** `produced_by` and `governance` honestly — especially the human/AI
    split and the review policy.
@@ -151,9 +151,9 @@ A copy is included in this repository as
 4. **Mark claims inline** in your content using the encoding defined in
    `epistemic_model.encoding` — so the `corpus` and `artifacts` profiles can be
    derived automatically rather than manually asserted.
-5. **Serve** the file at `https://yourdomain/trust.md`.
-6. **Pair it with [`fair.md`](https://github.com/Neuronautix/FAIR.md)** — trust.md covers *how
-   trustworthy* the content is; fair.md covers *how findable and reusable* it is.
+5. **Serve** the file at `https://yourdomain/TRUST.md`.
+6. **Pair it with [`FAIR.md`](https://github.com/Neuronautix/FAIR.md)** — TRUST.md covers *how
+   trustworthy* the content is; FAIR.md covers *how findable and reusable* it is.
 7. **Review** periodically and update `last_reviewed`.
 
 ---
@@ -176,7 +176,7 @@ requests are welcome:
 
 - Open an issue to discuss extensions to the epistemic model (additional
   categories, second confidence axis) or alignment with ECO/SEPIO/nanopubs.
-- Submit a PR with a worked `examples/` entry to show trust.md in a new domain.
+- Submit a PR with a worked `examples/` entry to show TRUST.md in a new domain.
 - Reference the formal spec in SPEC.md when proposing changes — keep changes
   backward-compatible within the 0.x series.
 
