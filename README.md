@@ -1,4 +1,4 @@
-# trust.md
+# TRUST.md
 
 **Traceable · Reviewed · Uncertainty-graded · Sourced · Transparent**
 
