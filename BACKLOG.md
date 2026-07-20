@@ -164,6 +164,14 @@ review*).
 - **Dependencies:** B-017, B-018.
 - **Acceptance:** every pair validates; doc linked from README and CHANGELOG.
 
+### B-025 — Maintain the dimensions-preview example
+- **Priority:** P5 · **Size:** S · **Agent-suitable:** Yes
+- **Goal:** `examples/dimensions-preview.trust.md` (v0.2-conformant via `x_` extension fields) stays green in CI and in sync with the D-012 dimension vocabulary; promoted to a native v0.3 example when B-017 lands.
+- **Scope:** the example file; CI already covers it via the `examples/*` loop.
+- **Non-goals:** spec or schema changes; inventing real assessment data (all numbers stay labelled illustrative).
+- **Dependencies:** D-012 direction; supersedes nothing; feeds B-020.
+- **Acceptance:** CLI exit 0 with zero warnings; schema-valid; every dimension level used at least once, incl. `not-assessed` vs `not-applicable` vs absent.
+
 ## P6 — Interoperability
 
 ### B-022 — TRUST-Knowledge mapping doc

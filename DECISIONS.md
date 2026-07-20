@@ -126,6 +126,26 @@ Whether a future v1.0 makes the dimensional model primary and removes the
 0–100 integer and `average_trust` is *not decided in this cycle*. Adoption
 data from v0.3 and methodology-contributor input (plan §12) are prerequisites.
 
+## D-012 — Dimension set and acronym expansion
+
+**Status: Proposed.**
+The core dimension set is chosen by the **admission test** (plan §4 Option F:
+self-assessable without expert appraisal of third-party science; distinct;
+has a not-applicable state; no prestige/citation-count/p-value proxies) — the
+acronym expansion follows the dimension set, never the reverse. Under that
+test the core set is: statement type (existing categories),
+`evidence_support`, `review_status`, `calibration` (uncertainty), and
+`source_integrity` defined strictly as *citation integrity*; **traceability**
+is realised as the `assessment` provenance block, which is recorded, not
+scored. **Robustness** and **transferability** are excluded from the core:
+they require expert appraisal of the underlying science (GRADE-style) and are
+supported only by referencing an external appraisal via `assessment.protocol`
+or as `x_` extensions. Additive per-letter subscores (5 × 20 summing to 100)
+are rejected (plan §4 Option E; see also D-002 — no mandatory or
+compensatory aggregate). Any re-expansion of the acronym must preserve
+review status and evidence support as first-class dimensions. Worked preview:
+`examples/dimensions-preview.trust.md`.
+
 ## D-011 — No calibration claims
 
 **Status: Accepted (planning-level).**

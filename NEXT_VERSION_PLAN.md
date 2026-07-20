@@ -244,6 +244,54 @@ band/level **distribution** (medians and counts, no means).
 - *Cons:* two ways to say related things during the transition (mitigated by
   clear deprecation text and validator hints); slightly larger spec.
 
+### Option E — Additive acronym subscores (considered, rejected)
+
+Split the score into five 20-point subscores named after the acronym letters,
+summing to 100. Recorded because it is the obvious construction; rejected on
+four grounds:
+
+1. **Compensatory aggregation** — summation asserts the dimensions are
+   exchangeable. A claim with immaculate provenance, review, and
+   uncertainty-grading but *no supporting evidence* would still score 60/100
+   ("Moderate"). A weighted sum is an average in disguise and violates
+   principle 5 (dimensions must not hide behind an aggregate).
+2. **Arbitrary equal weights** — no benchmark exists to justify 20/20/20/20/20
+   (or any other weighting); D-011 bans calibration claims without one.
+3. **Multiplied false precision** — five irreproducible 0–20 judgements plus a
+   sum that looks even more like a measurement than the current single number.
+4. **Type mismatch** — review is a discrete state (unreviewed → adjudicated),
+   not a 0–20 continuum; traceability and transparency are largely
+   repository-level properties. Identical numeric ranges flatten real type
+   differences that typed enums preserve.
+
+### Option F — Acronym re-expansion with new dimensions (assessed 2026-07-20)
+
+Proposed by the maintainer: **T**raceability · **R**obustness ·
+**U**ncertainty · **S**ource Integrity · **T**ransferability, as the dimension
+set. Assessment per candidate:
+
+| Candidate | Verdict | Reason |
+|---|---|---|
+| Traceability | **Adopt** (as provenance, not a score) | Is exactly the `assessment` block: assessor, protocol, timestamp, evidence links, supersession |
+| Robustness | **Reject as core** | Requires GRADE-style appraisal of the underlying science (risk of bias, consistency); not honestly self-assessable; drifts into evidence-management-platform scope and toward rating other people's studies (principle 2) |
+| Uncertainty | **Adopt** | Is the `calibration`/uncertainty dimension already sketched |
+| Source Integrity | **Adopt, narrowly defined** | Valid as *citation integrity* (sources exist, are quoted accurately, support the claim — extends `no_fabricated_citations`); invalid if it drifts to *source quality* (venue prestige — banned by principle 3) |
+| Transferability | **Reject as core** | External validity is an expert, domain-specific judgement about the *finding*, not the statement's epistemic status; not applicable to half the statement types; GRADE covers it as "indirectness" |
+
+Two further problems with the set as a whole: it **drops review status and
+evidence support** — two of the five separations this plan is required to
+make, and the two with the most practical value ("has any human checked
+this?"). Robustness and transferability remain available to adopters via an
+external appraisal referenced in `assessment.protocol`, or as `x_`
+extensions — never as spec-defined scores.
+
+**Dimension admission test** (normative for any future dimension): a candidate
+dimension must be (a) self-assessable without expert appraisal of third-party
+science, (b) distinct from existing dimensions, (c) equipped with a defined
+not-applicable state, and (d) free of prestige, citation-count, and p-value
+proxies. Acronym wording follows the admitted dimension set — never the
+reverse. See DECISIONS.md D-012.
+
 ## 5. Recommended direction
 
 **Adopt Option D, released as v0.3 (additive, non-breaking).** Rationale:
@@ -270,6 +318,8 @@ epistemic_model:
       levels: [unreviewed, agent-reviewed, human-reviewed, adjudicated]
     calibration:               # does the wording match the evidence?
       levels: [understated, matched, overstated, not-assessed]
+    source_integrity:          # citation integrity ONLY — never venue quality
+      levels: [verified, partially-verified, unverified, not-applicable]
 
 assessment:                    # NEW, optional — provenance of the assessment
   unit: repository             # repository | artifact | claim | claim-evidence
@@ -472,3 +522,9 @@ Tracked as *Proposed* in DECISIONS.md; summarised:
    plan says no — principle 6) — confirm with methodology contributors.
 8. Canonical casing (D-008) — needs the maintainer's decision jointly with
    FAIR.md, since both repos share the pattern.
+9. Acronym re-expansion and the final dimension set (D-012, plan §4 Option F)
+   — which expansion of T·R·U·S·T the convention advertises once the
+   dimensional model lands, given that the dimension set is chosen by the
+   admission test first and named second. A worked preview of the recommended
+   set (conformant to v0.2 via `x_` extension fields) is at
+   `examples/dimensions-preview.trust.md`.
