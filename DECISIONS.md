@@ -14,7 +14,7 @@ Context and evidence for all entries: `NEXT_VERSION_PLAN.md`.
 
 ## D-001 — Numerical vs ordinal assessment
 
-**Status: Proposed.**
+**Status: Accepted.**
 Keep the 0–100 integer scale as a valid, backward-compatible encoding, but
 make the five **bands/ordinal levels the primary semantic**; the integer is an
 optional refinement within a band. Band meanings are rewritten to describe
@@ -27,19 +27,20 @@ A).
 
 ## D-002 — Optional vs mandatory aggregate
 
-**Status: Proposed.**
+**Status: Accepted.**
 No aggregate is ever mandatory. `corpus.average_trust` (mean of ordinal
 judgements) is **deprecated but valid**; recommended summaries become
-`band_distribution` (counts) and `median_band`. Any aggregate a tool displays
-must keep the underlying dimensions one interaction away (principle 5). An
+`band_distribution` (counts), with `median_band` permitted as an optional
+secondary summary. For an even number of observations whose two central
+observations fall in different bands, `median_band` is the lower-support of
+the two bands (the conservative tie rule). Any aggregate a tool displays must
+keep the underlying dimensions one interaction away (principle 5). An
 aggregate over the new dimensions is permitted only as explicitly
-**experimental**, named, and non-default. Open sub-question for methodology
-contributors: is `median_band` itself defensible, or should only
-distributions be shown?
+**experimental**, named, and non-default.
 
 ## D-003 — Supported assessment units
 
-**Status: Proposed.**
+**Status: Accepted.**
 Four units: repository declaration (default), artifact/document (`artifacts[]`),
 individual claim (inline markup, only *summarised* in the manifest), and
 claim–evidence relation (**external records only**, referenced via
@@ -50,7 +51,7 @@ remains fully conformant — no adopter needs a knowledge graph.
 
 ## D-004 — Missing-data semantics
 
-**Status: Proposed.**
+**Status: Accepted.**
 Four distinct states, normative in v0.3:
 1. **Missing** (field absent) = not assessed, no statement made;
 2. **`not-assessed`** (explicit) = considered, deliberately not assessed;
@@ -62,21 +63,21 @@ specified, e.g. `companions.*`). Validators must not conflate these states.
 
 ## D-005 — Human and agent review states
 
-**Status: Proposed.**
+**Status: Accepted.**
 `review_status ∈ {unreviewed, agent-reviewed, human-reviewed, adjudicated}`,
 strictly ordered. Agent agreement — including agreement among *multiple*
 agents — caps at `agent-reviewed`: agreement is agreement, not scientific
 validation (principle 6). `human-reviewed` requires an identifiable human in
-`assessed_by`. `adjudicated` requires a recorded resolution of an actual
-disagreement — its precise definition (who adjudicates, where recorded) is an
-**open question** for methodology contributors (plan §12.4). Any status above
-`unreviewed` requires assessor, protocol, and timestamp provenance
+`assessed_by`. `adjudicated` requires a documented disagreement, an
+identifiable human adjudicator, and a reference to the resolution record. It
+records completion of a review process, not greater evidential support. Any
+status above `unreviewed` requires assessor, protocol, and timestamp provenance
 (principle 7); `independent_review: true` additionally requires a reviewer
 independent of `produced_by`.
 
 ## D-006 — Conformance levels
 
-**Status: Proposed.**
+**Status: Accepted.**
 Keep three levels, redefined for v0.3:
 - **Conformant** — MUST rules pass (unchanged in spirit; v0.1/v0.2 files stay
   conformant under their declared version);
@@ -85,8 +86,10 @@ Keep three levels, redefined for v0.3:
   which are auditable in spec-governed fields);
 - **Extended** — Recommended + dimensions or claim-level summaries +
   `assessment` provenance block + documented inline encoding.
-Renaming "Recommended" (ambiguous as a level name) is a bikeshed-level open
-item; do not block on it.
+Only obligations that are explicitly testable are machine-checked; other
+Recommended and Extended obligations remain normative but require documented
+human or methodology review. Renaming "Recommended" (ambiguous as a level
+name) is a bikeshed-level open item; do not block on it.
 
 ## D-007 — Backward compatibility and version number
 
@@ -100,7 +103,7 @@ or making dimensions primary) is **deferred** — see D-010.
 
 ## D-008 — Canonical filename casing and discovery
 
-**Status: Proposed (needs maintainer decision, coordinated with FAIR.md).**
+**Status: Accepted (coordinate the corresponding text with FAIR.md).**
 Recommendation: canonical repository filename **`TRUST.md`** (uppercase,
 matching README.md convention, this repo's name, and FAIR.md's de-facto repo
 usage); canonical served web path lowercase **`/trust.md`**, servers
@@ -111,24 +114,25 @@ way.
 
 ## D-009 — Unknown future fields
 
-**Status: Proposed.**
+**Status: Accepted.**
 Must-ignore policy: validators MUST NOT error on unknown top-level fields or
-unknown keys inside extensible objects (info-level notice at most); the `x_`
-prefix stays the recommendation for private extensions;
+unknown keys inside extensible objects, but MUST emit a notice so likely
+misspellings remain visible; the `x_` prefix stays the recommendation for
+private extensions;
 `additionalProperties: false` is removed from category/artifact/scale objects
 (defect D8c) so documented extension points (e.g. `eco:` on categories)
 are legal.
 
 ## D-010 — Deferred: promotion of dimensions to primary (v1.0)
 
-**Status: Proposed (explicitly deferred).**
+**Status: Accepted (explicitly deferred).**
 Whether a future v1.0 makes the dimensional model primary and removes the
 0–100 integer and `average_trust` is *not decided in this cycle*. Adoption
 data from v0.3 and methodology-contributor input (plan §12) are prerequisites.
 
 ## D-012 — Dimension set and acronym expansion
 
-**Status: Proposed.**
+**Status: Accepted.**
 The core dimension set is chosen by the **admission test** (plan §4 Option F:
 self-assessable without expert appraisal of third-party science; distinct;
 has a not-applicable state; no prestige/citation-count/p-value proxies) — the
