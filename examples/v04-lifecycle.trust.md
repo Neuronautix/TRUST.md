@@ -60,7 +60,7 @@ assessments:
     independence: "not-declared"
     status: "superseded"
     supersedes: "https://example.org/assessments/supersession-series/versions/1"
-    lifecycle_reason: "A later assessment series now covers this use."
+    lifecycle_reason: "This status-only version records that version 1 is replaced within this assessment series."
     limitations: []
   - series_id: "https://example.org/assessments/withdrawal-series"
     id: "https://example.org/assessments/withdrawal-series/versions/1"

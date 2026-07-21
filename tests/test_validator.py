@@ -741,6 +741,9 @@ def test_v04_lifecycle_examples_leave_subjects_unchanged():
         if item["status"] in {"superseded", "withdrawn", "retracted"}:
             assert item["supersedes"]
             assert item["lifecycle_reason"]
+    supersession = data["assessments"][1]
+    assert supersession["series_id"] in supersession["supersedes"]
+    assert "within this assessment series" in supersession["lifecycle_reason"]
 
 
 def test_v04_missing_state_example_preserves_four_meanings():
@@ -775,6 +778,15 @@ def test_v03_to_v04_migration_pair_is_explicit_and_meaning_preserving():
     assert migrated["assessed_at_precision"] == "date"
     assert "review_status" not in migrated["dimensions"]
     assert after["x_migration"]["legacy_average_trust"] == 80
+    population = after["x_migration"]["legacy_summary_population"]
+    assert population == {
+        "unit": "claims",
+        "count": before["corpus"]["total_claims"],
+        "source_scope": "corpus",
+    }
+    assert sum(migrated["summary"]["band_distribution"].values()) == population[
+        "count"
+    ]
 
 
 def test_v04_valid_fixtures_and_provenance_round_trip():

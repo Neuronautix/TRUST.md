@@ -74,6 +74,10 @@ x_migration:
   source_version: "0.3"
   legacy_protocol_text: "Repository declaration review"
   legacy_average_trust: 80
+  legacy_summary_population:
+    unit: "claims"
+    count: 2
+    source_scope: "corpus"
   supplied_fields:
     - "subject version"
     - "assessment identifiers"
@@ -88,4 +92,5 @@ last_reviewed: "2026-07-21"
 
 The singular v0.3 assessment becomes one item in `assessments`. Review status
 moves to provenance, dimensions become assessment-scoped, and the day-only date
-retains its original precision. No fitness conclusion was invented.
+retains its original precision. The copied distribution records its original
+two-claim corpus population explicitly. No fitness conclusion was invented.
