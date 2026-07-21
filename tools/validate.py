@@ -118,7 +118,8 @@ def _parse_range(value: Any) -> tuple[int, int] | None:
 def _check_support_model(
     data: dict[str, Any], errors: list[str], warnings: list[str]
 ) -> None:
-    model = data.get("epistemic_model") or {}
+    raw_model = data.get("epistemic_model")
+    model: dict[str, Any] = raw_model if isinstance(raw_model, dict) else {}
     bands = model.get("support_bands") or []
     ids = tuple(band.get("id") for band in bands if isinstance(band, dict))
     if ids and ids != CANONICAL_BANDS:
@@ -301,14 +302,18 @@ def _check_v04(
                     producers.get("agents") or []
                 )
             producer_names = {
-                person.get("name", "").strip().casefold()
+                person["name"].strip().casefold()
                 for person in producer_people
                 if isinstance(person, dict)
+                and isinstance(person.get("name"), str)
+                and person["name"].strip()
             }
             assessor_names = {
-                person.get("name", "").strip().casefold()
+                person["name"].strip().casefold()
                 for person in humans + agents
                 if isinstance(person, dict)
+                and isinstance(person.get("name"), str)
+                and person["name"].strip()
             }
             if not assessor_names or not (assessor_names - producer_names):
                 errors.append(
@@ -318,7 +323,7 @@ def _check_v04(
 
         dimensions = assessment.get("dimensions") or {}
         if isinstance(dimensions, dict):
-            for forbidden in ("review_status", "reuse_count", "citations", "popularity"):
+            for forbidden in ("review_status", "reuse_count", "citations", "popularity", "downloads"):
                 if forbidden not in dimensions:
                     continue
                 path = f"assessments[{index}].dimensions.{forbidden}"
@@ -382,6 +387,10 @@ def _check_v04(
             errors.append(
                 f"assessments[{index}].supersedes must reference the same series_id"
             )
+        if assessment.get("subject") != by_id[target].get("subject"):
+            errors.append(
+                f"assessments[{index}].supersedes must reference an assessment with the same subject"
+            )
         edges[source] = target
 
     reported_cycle_nodes: set[str] = set()
@@ -401,15 +410,22 @@ def _check_v04(
             current = edges[current]
 
 
-def _median_band(distribution: dict[str, int]) -> str | None:
+def _median_band(distribution: dict[str, Any]) -> str | None:
     """Return the lower-support middle band for an even-sized population."""
-    count = sum(distribution.get(band, 0) for band in CANONICAL_BANDS)
+    if not isinstance(distribution, dict):
+        return None
+    band_counts = {
+        band: v
+        for band in CANONICAL_BANDS
+        if isinstance(v := distribution.get(band, 0), int)
+    }
+    count = sum(band_counts.values())
     if not count:
         return None
     lower_position = (count - 1) // 2
     seen = 0
     for band in CANONICAL_BANDS:
-        seen += distribution.get(band, 0)
+        seen += band_counts.get(band, 0)
         if lower_position < seen:
             return band
     return None
