@@ -6,6 +6,37 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.3.0-rc.1] — 2026-07-21
+
+### Added
+
+- Primary five-band ordinal evidence-support model and four non-compensatory
+  dimensions.
+- Assessment-unit, missing-data, review-provenance, adjudication, and
+  independence semantics.
+- Frozen v0.1/v0.2 schemas, a v0.3 schema, and version-dispatch validation.
+- Repository, artifact, ordinal-only, extended, missing-state, migration, and
+  external relation examples.
+- Normative model, migration guide, and conformance matrix.
+
+### Changed
+
+- The 0–100 integer is now an optional non-probabilistic refinement within an
+  ordinal band.
+- `band_distribution` is the preferred summary; no aggregate is mandatory.
+- Canonical casing is `TRUST.md` in repositories and `/trust.md` on the web.
+
+### Deprecated
+
+- `corpus.average_trust` remains valid but produces a notice.
+
+### Fixed
+
+- Validator crash for incomplete band coverage and rejection of valid
+  single-point bands such as `100-100`.
+- Schema/CLI version, format, extension, and CI drift.
+- Invalid README example, stale v0.1/v0.2 wording, casing, and links.
+
 ## [0.2] — 2026-06-08
 
 ### Added
@@ -62,3 +93,4 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 [0.2]: https://github.com/Neuronautix/TRUST.md/releases/tag/v0.2
 [0.1]: https://github.com/Neuronautix/TRUST.md/releases/tag/v0.1
+[0.3.0-rc.1]: https://github.com/Neuronautix/TRUST.md/releases/tag/v0.3.0-rc.1
