@@ -1,375 +1,181 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Neuronautix/TRUST.md/blob/v0.2/schema/trust.schema.json",
-  "title": "trust.md YAML front-matter schema",
-  "description": "JSON Schema (draft 2020-12) for the YAML front matter of a trust.md file conforming to the trust.md specification v0.2 (backward-compatible with v0.1). Apply to the parsed YAML object (the front-matter block between the --- delimiters).",
+  "$id": "https://raw.githubusercontent.com/Neuronautix/TRUST.md/v0.3.0/schema/v0.3/trust.schema.json",
+  "title": "TRUST.md v0.3 YAML front matter",
   "type": "object",
-  "required": [
-    "trust_md_version",
-    "title",
-    "description",
-    "canonical",
-    "license",
-    "companions",
-    "produced_by",
-    "governance",
-    "epistemic_model",
-    "last_reviewed"
-  ],
-  "additionalProperties": true,
+  "required": ["trust_md_version", "title", "description", "canonical", "license", "companions", "produced_by", "governance", "epistemic_model", "last_reviewed"],
   "properties": {
-    "trust_md_version": {
-      "type": "string",
-      "enum": ["0.1", "0.2"],
-      "description": "Version of the trust.md specification this file conforms to."
-    },
-    "title": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Short, human-readable name for this trust declaration."
-    },
-    "description": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Brief description of what this trust declaration covers."
-    },
-    "canonical": {
-      "type": "string",
-      "format": "uri",
-      "description": "Stable URL where this trust.md file is served."
-    },
-    "license": {
-      "type": "string",
-      "minLength": 1,
-      "description": "SPDX license identifier for this trust declaration document."
-    },
+    "trust_md_version": {"const": "0.3"},
+    "title": {"type": "string", "minLength": 1},
+    "description": {"type": "string", "minLength": 1},
+    "canonical": {"type": "string", "format": "uri", "pattern": "^https?://"},
+    "license": {"type": "string", "minLength": 1},
     "companions": {
       "type": "object",
-      "additionalProperties": {
-        "$ref": "#/$defs/companionPath"
-      },
-      "description": "Paths to companion artifacts.",
       "properties": {
-        "fair": {
-          "$ref": "#/$defs/companionPath"
-        },
-        "inline_markup_spec": {
-          "$ref": "#/$defs/companionPath"
-        }
-      }
+        "fair": {"$ref": "#/$defs/companion"},
+        "inline_markup_spec": {"$ref": "#/$defs/companion"},
+        "claim_records": {"$ref": "#/$defs/companion"}
+      },
+      "additionalProperties": {"$ref": "#/$defs/companion"}
     },
     "produced_by": {
       "type": "object",
       "required": ["humans", "agents"],
-      "additionalProperties": false,
-      "description": "Declares the human and AI contributors to the knowledge in this repository.",
       "properties": {
-        "humans": {
-          "type": "array",
-          "minItems": 1,
-          "description": "Human contributors. At least one MUST be listed.",
-          "items": {
-            "type": "object",
-            "required": ["name", "role"],
-            "additionalProperties": true,
-            "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Full name of the contributor."
-              },
-              "orcid": {
-                "type": "string",
-                "pattern": "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$",
-                "description": "ORCID iD in the format 0000-0000-0000-000X."
-              },
-              "role": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Role(s) with respect to the repository."
-              },
-              "org": {
-                "type": "string",
-                "description": "Institutional affiliation."
-              }
-            }
-          }
-        },
-        "agents": {
-          "type": "array",
-          "description": "AI/automated agents involved in producing content. Use [] if none.",
-          "items": {
-            "type": "object",
-            "required": ["name", "role", "oversight"],
-            "additionalProperties": true,
-            "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Name of the AI system or automated tool."
-              },
-              "role": {
-                "type": "string",
-                "minLength": 1,
-                "description": "What the agent does."
-              },
-              "oversight": {
-                "type": "string",
-                "enum": ["human-reviewed", "human-in-the-loop", "automated", "none"],
-                "description": "Human oversight level."
-              }
-            }
-          }
-        }
+        "humans": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/human"}},
+        "agents": {"type": "array", "items": {"$ref": "#/$defs/agent"}}
       }
     },
     "governance": {
       "type": "object",
-      "required": [
-        "source_of_truth",
-        "no_fabricated_citations",
-        "review_policy",
-        "correction_policy",
-        "conflict_of_interest"
-      ],
-      "additionalProperties": true,
-      "description": "Editorial policies governing content reliability.",
+      "required": ["source_of_truth", "no_fabricated_citations", "review_policy", "correction_policy", "conflict_of_interest"],
       "properties": {
-        "source_of_truth": {
-          "type": "string",
-          "minLength": 1,
-          "description": "States what the authoritative record is."
-        },
-        "no_fabricated_citations": {
-          "type": "boolean",
-          "description": "Explicit commitment that citations are verified, not fabricated."
-        },
-        "review_policy": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Describes how claims are reviewed before publication."
-        },
-        "correction_policy": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Describes how errors are corrected after publication."
-        },
-        "conflict_of_interest": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Discloses any commercial or personal interests that may influence content."
-        }
+        "source_of_truth": {"type": "string", "minLength": 1},
+        "no_fabricated_citations": {"type": "boolean"},
+        "review_policy": {"type": "string", "minLength": 1},
+        "correction_policy": {"type": "string", "minLength": 1},
+        "conflict_of_interest": {"type": "string", "minLength": 1}
       }
     },
     "epistemic_model": {
       "type": "object",
-      "required": ["categories", "confidence_scale"],
-      "additionalProperties": true,
-      "description": "Defines the grading model for epistemic categories and confidence.",
+      "required": ["categories", "support_bands"],
       "properties": {
-        "categories": {
+        "categories": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/category"}},
+        "support_bands": {
           "type": "array",
-          "minItems": 1,
-          "description": "Epistemic category taxonomy.",
-          "items": {
-            "type": "object",
-            "required": ["id", "label", "definition"],
-            "additionalProperties": false,
-            "properties": {
-              "id": {
-                "type": "string",
-                "pattern": "^[a-zA-Z0-9_-]+$",
-                "description": "Unique identifier for this category (no spaces)."
-              },
-              "label": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Short human-readable label."
-              },
-              "definition": {
-                "type": "string",
-                "minLength": 1,
-                "description": "Plain-language definition."
-              }
-            }
-          }
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {"$ref": "#/$defs/supportBand"}
         },
         "confidence_scale": {
           "type": "object",
-          "required": ["type", "range", "independent_of_category", "bands"],
-          "additionalProperties": false,
-          "description": "Numerical confidence axis definition.",
+          "required": ["type", "range", "independent_of_category"],
           "properties": {
-            "type": {
-              "type": "string",
-              "const": "integer",
-              "description": "Data type for confidence values. MUST be 'integer'."
-            },
-            "range": {
-              "type": "array",
-              "prefixItems": [
-                {"type": "integer", "const": 0},
-                {"type": "integer", "const": 100}
-              ],
-              "minItems": 2,
-              "maxItems": 2,
-              "items": false,
-              "description": "[min, max] of the confidence scale. MUST be [0, 100]."
-            },
-            "independent_of_category": {
-              "type": "boolean",
-              "const": true,
-              "description": "Whether category and confidence are independent axes. MUST be true."
-            },
-            "bands": {
-              "type": "array",
-              "minItems": 5,
-              "description": "Human-interpretable confidence bands. At least five REQUIRED.",
-              "items": {
-                "type": "object",
-                "required": ["range", "label", "meaning"],
-                "additionalProperties": false,
-                "properties": {
-                  "range": {
-                    "type": "string",
-                    "pattern": "^[0-9]+-[0-9]+$",
-                    "description": "Inclusive integer range, e.g. '90-100'."
-                  },
-                  "label": {
-                    "type": "string",
-                    "minLength": 1,
-                    "description": "Short label for this band."
-                  },
-                  "meaning": {
-                    "type": "string",
-                    "minLength": 1,
-                    "description": "Plain-language definition of what this score means."
-                  }
-                }
-              }
-            }
+            "type": {"const": "integer"},
+            "range": {"const": [0, 100]},
+            "independent_of_category": {"const": true},
+            "not_probability": {"const": true}
           }
         },
-        "encoding": {
-          "type": "object",
-          "additionalProperties": true,
-          "description": "Optional description of inline claim markup encoding.",
-          "properties": {
-            "inline": {
-              "type": "string",
-              "description": "The inline encoding syntax."
-            },
-            "reader_tooling": {
-              "type": "string",
-              "description": "Description of reader-facing tooling that renders the markup."
-            }
-          }
-        },
-        "alignment": {
-          "type": "array",
-          "description": "Formal standards to which the epistemic model aligns.",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        }
+        "dimensions": {"$ref": "#/$defs/dimensions"},
+        "encoding": {"type": "object"},
+        "alignment": {"type": "array", "items": {"type": "string", "minLength": 1}}
       }
     },
+    "assessment": {"$ref": "#/$defs/assessment"},
     "corpus": {
       "type": "object",
-      "required": ["notes_with_markup", "total_claims", "average_trust", "category_distribution"],
-      "additionalProperties": true,
-      "description": "Aggregate trust statistics for the marked corpus.",
       "properties": {
-        "notes_with_markup": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Number of content items with inline claim markup."
-        },
-        "total_claims": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Total number of graded claims across the corpus."
-        },
-        "average_trust": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 100,
-          "description": "Mean confidence score across all marked claims (0–100)."
-        },
-        "category_distribution": {
-          "type": "object",
-          "description": "Count of claims per category id.",
-          "additionalProperties": {
-            "type": "integer",
-            "minimum": 0
-          }
-        }
+        "notes_with_markup": {"type": "integer", "minimum": 0},
+        "total_claims": {"type": "integer", "minimum": 0},
+        "average_trust": {"type": "number"},
+        "category_distribution": {"$ref": "#/$defs/counts"},
+        "band_distribution": {"$ref": "#/$defs/bandCounts"},
+        "median_band": {"$ref": "#/$defs/bandName"}
       }
     },
-    "artifacts": {
-      "type": "array",
-      "description": "Per-artifact trust profiles, ordered by avg descending.",
-      "items": {
-        "type": "object",
-        "required": ["path", "claims", "avg", "dist"],
-        "additionalProperties": false,
-        "properties": {
-          "path": {
-            "type": "string",
-            "pattern": "^/",
-            "description": "Root-relative path to the artifact."
-          },
-          "claims": {
-            "type": "integer",
-            "minimum": 0,
-            "description": "Total graded claims in this artifact."
-          },
-          "avg": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100,
-            "description": "Mean confidence score for this artifact."
-          },
-          "dist": {
-            "type": "object",
-            "description": "Claim counts per category id.",
-            "additionalProperties": {
-              "type": "integer",
-              "minimum": 0
-            }
-          }
-        }
-      }
-    },
-    "limitations": {
-      "type": "array",
-      "description": "Known limitations of this self-declaration.",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      }
-    },
-    "last_reviewed": {
-      "type": "string",
-      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-      "format": "date",
-      "description": "ISO 8601 date (YYYY-MM-DD) of the last review."
-    }
+    "artifacts": {"type": "array", "items": {"$ref": "#/$defs/artifact"}},
+    "limitations": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "last_reviewed": {"type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"}
   },
   "$defs": {
-    "companionPath": {
-      "oneOf": [
-        {
-          "type": "string",
-          "pattern": "^/",
-          "description": "Root-relative path to the companion artifact."
+    "companion": {"oneOf": [{"type": "string", "pattern": "^/"}, {"type": "null"}]},
+    "human": {
+      "type": "object",
+      "required": ["name", "role"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "orcid": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"},
+        "org": {"type": "string"}
+      }
+    },
+    "agent": {
+      "type": "object",
+      "required": ["name", "role", "oversight"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "oversight": {"enum": ["human-reviewed", "human-in-the-loop", "automated", "none"]}
+      }
+    },
+    "category": {
+      "type": "object",
+      "required": ["id", "label", "definition"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-zA-Z0-9_-]+$"},
+        "label": {"type": "string", "minLength": 1},
+        "definition": {"type": "string", "minLength": 1}
+      }
+    },
+    "bandName": {"enum": ["speculative", "tentative", "moderate", "high", "very-high"]},
+    "supportBand": {
+      "type": "object",
+      "required": ["id", "label", "meaning"],
+      "properties": {
+        "id": {"$ref": "#/$defs/bandName"},
+        "label": {"type": "string", "minLength": 1},
+        "meaning": {"type": "string", "minLength": 1},
+        "range": {"type": "string", "pattern": "^[0-9]+-[0-9]+$"}
+      }
+    },
+    "missingState": {"enum": ["not-assessed", "not-applicable"]},
+    "dimensions": {
+      "type": "object",
+      "properties": {
+        "evidence_support": {"oneOf": [{"enum": ["none", "contested", "partial", "indirect", "direct"]}, {"$ref": "#/$defs/missingState"}]},
+        "review_status": {"enum": ["unreviewed", "agent-reviewed", "human-reviewed", "adjudicated", "not-assessed", "not-applicable"]},
+        "calibration": {"enum": ["understated", "matched", "overstated", "not-assessed", "not-applicable"]},
+        "source_integrity": {"enum": ["unverified", "partially-verified", "verified", "not-assessed", "not-applicable"]}
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "required": ["unit", "review_status", "assessed_by", "protocol", "date"],
+      "properties": {
+        "unit": {"enum": ["repository", "artifact", "claim", "claim-evidence"]},
+        "review_status": {"enum": ["unreviewed", "agent-reviewed", "human-reviewed", "adjudicated"]},
+        "assessed_by": {
+          "type": "object",
+          "required": ["humans", "agents"],
+          "properties": {
+            "humans": {"type": "array", "items": {"$ref": "#/$defs/human"}},
+            "agents": {"type": "array", "items": {"$ref": "#/$defs/agent"}}
+          }
         },
-        {
-          "type": "null",
-          "description": "null if the companion artifact does not exist yet."
-        }
-      ]
+        "protocol": {"type": "string"},
+        "date": {"type": "string", "format": "date"},
+        "independent_review": {"type": "boolean"},
+        "supersedes": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+        "disagreement": {"type": "string", "minLength": 1},
+        "resolution": {"type": "string", "minLength": 1}
+      }
+    },
+    "counts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "bandCounts": {
+      "type": "object",
+      "properties": {
+        "speculative": {"type": "integer", "minimum": 0},
+        "tentative": {"type": "integer", "minimum": 0},
+        "moderate": {"type": "integer", "minimum": 0},
+        "high": {"type": "integer", "minimum": 0},
+        "very-high": {"type": "integer", "minimum": 0}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^/"},
+        "claims": {"type": "integer", "minimum": 0},
+        "avg": {"type": "number"},
+        "dist": {"$ref": "#/$defs/counts"},
+        "band_distribution": {"$ref": "#/$defs/bandCounts"},
+        "median_band": {"$ref": "#/$defs/bandName"},
+        "dimensions": {"$ref": "#/$defs/dimensions"}
+      }
     }
   }
 }
