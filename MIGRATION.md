@@ -23,7 +23,7 @@ need to adopt v0.3 fields.
 | v0.1/v0.2 | v0.3 treatment |
 |---|---|
 | `trust_md_version: "0.1" | "0.2"` | Set to `"0.3"` only after adopting this contract |
-| `confidence_scale.bands[].label` | Primary ordinal semantic; canonical identifiers are normalized lowercase labels with hyphens |
+| `epistemic_model.confidence_scale.bands[]` | Move to `epistemic_model.support_bands[]`; use canonical lowercase hyphenated IDs. Keep only the optional integer refinement metadata under `confidence_scale` |
 | Inline `data-trust="85"` | Still valid; SHOULD be accompanied by the band and MUST NOT be presented as a probability |
 | `corpus.average_trust` | Deprecated but valid |
 | No aggregate | Valid |

@@ -1,20 +1,20 @@
 ---
 trust_md_version: "0.3"
-title: "My Project — Trust & Epistemic Provenance Declaration"
-description: "How this repository's knowledge is produced, governed, and assessed."
-canonical: "https://myproject.example.org/trust.md"
+title: "TRUST.md v0.3 missing-state example"
+description: "The four missing and low-result semantics shown explicitly."
+canonical: "https://example.org/trust.md"
 license: "CC-BY-4.0"
 companions:
   fair: null
 produced_by:
   humans:
-    - name: "Project Maintainer"
-      role: "author and accountable signatory"
+    - name: "Example Author"
+      role: "author"
   agents: []
 governance:
-  source_of_truth: "The human-approved repository record, not raw model output."
+  source_of_truth: "The human-approved repository record."
   no_fabricated_citations: true
-  review_policy: "Document the review actually performed; do not infer it from confidence."
+  review_policy: "A named human reviews the declaration."
   correction_policy: "Corrections are recorded in version control."
   conflict_of_interest: "None declared."
 epistemic_model:
@@ -34,19 +34,18 @@ epistemic_model:
     independent_of_category: true
     not_probability: true
   dimensions:
-    evidence_support: "direct"
-    review_status: "human-reviewed"
-    calibration: "matched"
-    source_integrity: "verified"
+    evidence_support: "none"
+    calibration: "not-assessed"
+    source_integrity: "not-applicable"
 assessment:
   unit: "repository"
   review_status: "human-reviewed"
   assessed_by:
     humans:
-      - name: "Independent Reviewer"
+      - name: "Example Reviewer"
         role: "reviewer"
     agents: []
-  protocol: "Project review protocol identifier or URL"
+  protocol: "TRUST.md v0.3 declaration review"
   date: "2026-07-21"
   independent_review: true
 corpus:
@@ -60,9 +59,9 @@ limitations:
 last_reviewed: "2026-07-21"
 ---
 
-# My Project — Trust & Epistemic Provenance
+# Missing-state declaration
 
-Replace the illustrative identities, URLs, policies, assessment results, and
-counts above with truthful project data. Remove optional `assessment`,
-`dimensions`, and `corpus` blocks when the information is not yet known; do
-not encode missing work as a low assessment result.
+`evidence_support: none` is an assessed low-support result. Calibration was
+considered and deliberately `not-assessed`. Source integrity does not apply.
+The absent `dimensions.review_status` makes no statement; it is distinct from
+the provenance block's completed review of this declaration.

@@ -60,7 +60,13 @@
           }
         },
         "dimensions": {"$ref": "#/$defs/dimensions"},
-        "encoding": {"type": "object"},
+        "encoding": {
+          "type": "object",
+          "properties": {
+            "inline": {"type": "string", "minLength": 1},
+            "reader_tooling": {"type": "string", "minLength": 1}
+          }
+        },
         "alignment": {"type": "array", "items": {"type": "string", "minLength": 1}}
       }
     },
@@ -145,7 +151,7 @@
             "agents": {"type": "array", "items": {"$ref": "#/$defs/agent"}}
           }
         },
-        "protocol": {"type": "string"},
+        "protocol": {"type": "string", "minLength": 1},
         "date": {"type": "string", "format": "date"},
         "independent_review": {"type": "boolean"},
         "supersedes": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},

@@ -1,20 +1,20 @@
 ---
 trust_md_version: "0.3"
-title: "My Project — Trust & Epistemic Provenance Declaration"
-description: "How this repository's knowledge is produced, governed, and assessed."
-canonical: "https://myproject.example.org/trust.md"
+title: "Artifact-level TRUST.md v0.3 example"
+description: "A repository declaration with one assessed document."
+canonical: "https://example.org/trust.md"
 license: "CC-BY-4.0"
 companions:
   fair: null
 produced_by:
   humans:
-    - name: "Project Maintainer"
-      role: "author and accountable signatory"
+    - name: "Example Author"
+      role: "author"
   agents: []
 governance:
-  source_of_truth: "The human-approved repository record, not raw model output."
+  source_of_truth: "The human-approved repository record."
   no_fabricated_citations: true
-  review_policy: "Document the review actually performed; do not infer it from confidence."
+  review_policy: "A named human reviews the declaration."
   correction_policy: "Corrections are recorded in version control."
   conflict_of_interest: "None declared."
 epistemic_model:
@@ -39,14 +39,14 @@ epistemic_model:
     calibration: "matched"
     source_integrity: "verified"
 assessment:
-  unit: "repository"
+  unit: "artifact"
   review_status: "human-reviewed"
   assessed_by:
     humans:
-      - name: "Independent Reviewer"
+      - name: "Example Reviewer"
         role: "reviewer"
     agents: []
-  protocol: "Project review protocol identifier or URL"
+  protocol: "TRUST.md v0.3 declaration review"
   date: "2026-07-21"
   independent_review: true
 corpus:
@@ -55,14 +55,22 @@ corpus:
   category_distribution: {cited: 4}
   band_distribution: {speculative: 0, tentative: 0, moderate: 1, high: 1, very-high: 2}
   median_band: "high"
+artifacts:
+  - path: "/reports/example-review.md"
+    claims: 4
+    band_distribution: {speculative: 0, tentative: 0, moderate: 1, high: 1, very-high: 2}
+    median_band: "high"
+    dimensions:
+      evidence_support: "direct"
+      review_status: "human-reviewed"
+      calibration: "matched"
+      source_integrity: "verified"
 limitations:
   - "Self-declared metadata."
 last_reviewed: "2026-07-21"
 ---
 
-# My Project — Trust & Epistemic Provenance
+# Artifact-level declaration
 
-Replace the illustrative identities, URLs, policies, assessment results, and
-counts above with truthful project data. Remove optional `assessment`,
-`dimensions`, and `corpus` blocks when the information is not yet known; do
-not encode missing work as a low assessment result.
+The assessment applies to `/reports/example-review.md`; the repository-level
+metadata supplies its governance and provenance context.

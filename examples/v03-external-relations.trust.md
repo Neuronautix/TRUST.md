@@ -1,20 +1,21 @@
 ---
 trust_md_version: "0.3"
-title: "My Project — Trust & Epistemic Provenance Declaration"
-description: "How this repository's knowledge is produced, governed, and assessed."
-canonical: "https://myproject.example.org/trust.md"
+title: "External claim-evidence records example"
+description: "A TRUST.md pointer to externally governed relation records."
+canonical: "https://example.org/trust.md"
 license: "CC-BY-4.0"
 companions:
   fair: null
+  claim_records: "/evidence/claim-evidence.jsonl"
 produced_by:
   humans:
-    - name: "Project Maintainer"
-      role: "author and accountable signatory"
+    - name: "Example Author"
+      role: "author"
   agents: []
 governance:
-  source_of_truth: "The human-approved repository record, not raw model output."
+  source_of_truth: "The human-approved repository record."
   no_fabricated_citations: true
-  review_policy: "Document the review actually performed; do not infer it from confidence."
+  review_policy: "A named human reviews the declaration."
   correction_policy: "Corrections are recorded in version control."
   conflict_of_interest: "None declared."
 epistemic_model:
@@ -39,14 +40,14 @@ epistemic_model:
     calibration: "matched"
     source_integrity: "verified"
 assessment:
-  unit: "repository"
+  unit: "claim-evidence"
   review_status: "human-reviewed"
   assessed_by:
     humans:
-      - name: "Independent Reviewer"
+      - name: "Example Reviewer"
         role: "reviewer"
     agents: []
-  protocol: "Project review protocol identifier or URL"
+  protocol: "TRUST.md v0.3 declaration review"
   date: "2026-07-21"
   independent_review: true
 corpus:
@@ -60,9 +61,7 @@ limitations:
 last_reviewed: "2026-07-21"
 ---
 
-# My Project — Trust & Epistemic Provenance
+# External claim–evidence records
 
-Replace the illustrative identities, URLs, policies, assessment results, and
-counts above with truthful project data. Remove optional `assessment`,
-`dimensions`, and `corpus` blocks when the information is not yet known; do
-not encode missing work as a low assessment result.
+TRUST.md records the protocol and pointer only. The external JSONL companion
+owns relation identifiers, evidence targets, lineage, and reassessment history.

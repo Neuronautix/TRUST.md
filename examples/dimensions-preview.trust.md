@@ -1,11 +1,10 @@
 ---
 # trust.md — dimensions preview example
 #
-# PURPOSE: a worked preview of the multidimensional assessment model proposed
-# for v0.3 (NEXT_VERSION_PLAN.md §5.1, DECISIONS.md D-012). This file is FULLY
-# CONFORMANT TO v0.2 as published: every proposed structure is carried in
-# `x_`-namespaced extension fields per SPEC.md §5.3, so it validates against
-# the current schema and CLI unchanged.
+# PURPOSE: a historical v0.2-compatible preview of the multidimensional model
+# that became native in v0.3. Every newer structure remains carried in `x_`
+# extension fields so this declaration continues to exercise frozen v0.2
+# compatibility. For native v0.3, see `v03-extended.trust.md`.
 #
 # WHAT IT DEMONSTRATES
 #   1. Band meanings rewritten to describe EVIDENCE SUPPORT ONLY (defect D10
@@ -26,9 +25,8 @@
 trust_md_version: "0.2"
 title: "Aurora Field Notes — Trust & Epistemic Provenance Declaration (dimensions preview)"
 description: >
-  Illustrative trust manifest for a fictional knowledge base, previewing the
-  multidimensional assessment model proposed for trust.md v0.3 via
-  x_-namespaced extension fields. Conformant to v0.2.
+  Historical v0.2-compatible trust manifest for a fictional knowledge base,
+  showing the extension-field form that preceded native v0.3 fields.
 canonical: "https://aurora.example.org/trust.md"
 license: "CC-BY-4.0"
 companions:
@@ -182,10 +180,10 @@ last_reviewed: "2026-07-20"
 
 # trust.md — Aurora Field Notes (dimensions preview)
 
-This example previews the **multidimensional assessment model proposed for
-trust.md v0.3** while remaining a fully conformant **v0.2** file: every
-proposed structure is carried in `x_`-namespaced extension fields, which the
-current specification explicitly permits (SPEC.md §5.3).
+This historical example shows the extension-field form used before the
+multidimensional model became native in v0.3. It remains a fully conformant
+**v0.2** file and exists to test backward compatibility. New adopters should
+use [`v03-extended.trust.md`](v03-extended.trust.md).
 
 **Everything here describes a fictional project. All numbers are
 illustrative.**
