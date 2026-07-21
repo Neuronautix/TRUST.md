@@ -18,14 +18,15 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install pyyaml
-
-      - name: Validate reference implementation (examples/neuronautix.trust.md)
-        run: python tools/validate.py examples/neuronautix.trust.md
+        run: pip install pyyaml jsonschema pytest
 
       - name: Validate all examples
         run: |
-          for f in examples/*.trust.md; do
+          python tools/validate.py TRUST.md
+          find examples -name '*.trust.md' -print0 | while IFS= read -r -d '' f; do
             echo "--- $f ---"
             python tools/validate.py "$f"
           done
+
+      - name: Run schema and validator tests
+        run: python -m pytest -q

@@ -1,20 +1,21 @@
 ---
 trust_md_version: "0.3"
-title: "My Project — Trust & Epistemic Provenance Declaration"
-description: "How this repository's knowledge is produced, governed, and assessed."
-canonical: "https://myproject.example.org/trust.md"
+title: "Extended TRUST.md v0.3 example"
+description: "Dimensions, claim summaries, provenance, and inline encoding."
+canonical: "https://example.org/trust.md"
 license: "CC-BY-4.0"
 companions:
   fair: null
+  inline_markup_spec: "/docs/claim-markup.md"
 produced_by:
   humans:
-    - name: "Project Maintainer"
-      role: "author and accountable signatory"
+    - name: "Example Author"
+      role: "author"
   agents: []
 governance:
-  source_of_truth: "The human-approved repository record, not raw model output."
+  source_of_truth: "The human-approved repository record."
   no_fabricated_citations: true
-  review_policy: "Document the review actually performed; do not infer it from confidence."
+  review_policy: "A named human reviews the declaration."
   correction_policy: "Corrections are recorded in version control."
   conflict_of_interest: "None declared."
 epistemic_model:
@@ -38,15 +39,26 @@ epistemic_model:
     review_status: "human-reviewed"
     calibration: "matched"
     source_integrity: "verified"
+  encoding:
+    inline: 'HTML: <span class="claim" data-support="high" data-review="human-reviewed">'
+    reader_tooling: "A static-site transform renders badges and source links."
+x_claim_summaries:
+  - claim_id: "claim-001"
+    band: "high"
+    dimensions:
+      evidence_support: "direct"
+      review_status: "human-reviewed"
+      calibration: "matched"
+      source_integrity: "verified"
 assessment:
   unit: "repository"
   review_status: "human-reviewed"
   assessed_by:
     humans:
-      - name: "Independent Reviewer"
+      - name: "Example Reviewer"
         role: "reviewer"
     agents: []
-  protocol: "Project review protocol identifier or URL"
+  protocol: "TRUST.md v0.3 declaration review"
   date: "2026-07-21"
   independent_review: true
 corpus:
@@ -60,9 +72,8 @@ limitations:
 last_reviewed: "2026-07-21"
 ---
 
-# My Project — Trust & Epistemic Provenance
+# Extended declaration
 
-Replace the illustrative identities, URLs, policies, assessment results, and
-counts above with truthful project data. Remove optional `assessment`,
-`dimensions`, and `corpus` blocks when the information is not yet known; do
-not encode missing work as a low assessment result.
+The manifest summarizes claim-level assessment without pretending to own the
+claim graph. The documented inline encoding remains the source of individual
+claim records.

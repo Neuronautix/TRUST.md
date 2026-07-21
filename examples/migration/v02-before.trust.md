@@ -126,7 +126,7 @@ and why**. It is the repository-level companion to the inline *Trust Lens* —
 the per-claim epistemic markup readers can toggle on any note. The YAML block
 above is machine-readable; this prose is for people.
 
-It is a **proposed convention (v0.2)**, with this repository as its reference
+It is a **proposed convention (v0.1)**, with this repository as its reference
 implementation.
 
 ## Why trust.md?
