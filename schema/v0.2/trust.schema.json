@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/Neuronautix/TRUST.md/v0.2/schema/v0.2/trust.schema.json",
+  "$id": "https://raw.githubusercontent.com/Neuronautix/TRUST.md/v0.3.0-rc.1/schema/v0.2/trust.schema.json",
   "title": "trust.md YAML front-matter schema",
   "description": "JSON Schema (draft 2020-12) for the YAML front matter of a trust.md file conforming to the trust.md specification v0.2 (backward-compatible with v0.1). Apply to the parsed YAML object (the front-matter block between the --- delimiters).",
   "type": "object",
