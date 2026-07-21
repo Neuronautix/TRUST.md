@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Neuronautix/TRUST.md/v0.3.0/schema/v0.3/trust.schema.json",
+  "title": "TRUST.md v0.3 YAML front matter",
+  "type": "object",
+  "required": ["trust_md_version", "title", "description", "canonical", "license", "companions", "produced_by", "governance", "epistemic_model", "last_reviewed"],
+  "properties": {
+    "trust_md_version": {"const": "0.3"},
+    "title": {"type": "string", "minLength": 1},
+    "description": {"type": "string", "minLength": 1},
+    "canonical": {"type": "string", "format": "uri", "pattern": "^https?://"},
+    "license": {"type": "string", "minLength": 1},
+    "companions": {
+      "type": "object",
+      "properties": {
+        "fair": {"$ref": "#/$defs/companion"},
+        "inline_markup_spec": {"$ref": "#/$defs/companion"},
+        "claim_records": {"$ref": "#/$defs/companion"}
+      },
+      "additionalProperties": {"$ref": "#/$defs/companion"}
+    },
+    "produced_by": {
+      "type": "object",
+      "required": ["humans", "agents"],
+      "properties": {
+        "humans": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/human"}},
+        "agents": {"type": "array", "items": {"$ref": "#/$defs/agent"}}
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": ["source_of_truth", "no_fabricated_citations", "review_policy", "correction_policy", "conflict_of_interest"],
+      "properties": {
+        "source_of_truth": {"type": "string", "minLength": 1},
+        "no_fabricated_citations": {"type": "boolean"},
+        "review_policy": {"type": "string", "minLength": 1},
+        "correction_policy": {"type": "string", "minLength": 1},
+        "conflict_of_interest": {"type": "string", "minLength": 1}
+      }
+    },
+    "epistemic_model": {
+      "type": "object",
+      "required": ["categories", "support_bands"],
+      "properties": {
+        "categories": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/category"}},
+        "support_bands": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {"$ref": "#/$defs/supportBand"}
+        },
+        "confidence_scale": {
+          "type": "object",
+          "required": ["type", "range", "independent_of_category"],
+          "properties": {
+            "type": {"const": "integer"},
+            "range": {"const": [0, 100]},
+            "independent_of_category": {"const": true},
+            "not_probability": {"const": true}
+          }
+        },
+        "dimensions": {"$ref": "#/$defs/dimensions"},
+        "encoding": {"type": "object"},
+        "alignment": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "assessment": {"$ref": "#/$defs/assessment"},
+    "corpus": {
+      "type": "object",
+      "properties": {
+        "notes_with_markup": {"type": "integer", "minimum": 0},
+        "total_claims": {"type": "integer", "minimum": 0},
+        "average_trust": {"type": "number"},
+        "category_distribution": {"$ref": "#/$defs/counts"},
+        "band_distribution": {"$ref": "#/$defs/bandCounts"},
+        "median_band": {"$ref": "#/$defs/bandName"}
+      }
+    },
+    "artifacts": {"type": "array", "items": {"$ref": "#/$defs/artifact"}},
+    "limitations": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "last_reviewed": {"type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"}
+  },
+  "$defs": {
+    "companion": {"oneOf": [{"type": "string", "pattern": "^/"}, {"type": "null"}]},
+    "human": {
+      "type": "object",
+      "required": ["name", "role"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "orcid": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"},
+        "org": {"type": "string"}
+      }
+    },
+    "agent": {
+      "type": "object",
+      "required": ["name", "role", "oversight"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "oversight": {"enum": ["human-reviewed", "human-in-the-loop", "automated", "none"]}
+      }
+    },
+    "category": {
+      "type": "object",
+      "required": ["id", "label", "definition"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-zA-Z0-9_-]+$"},
+        "label": {"type": "string", "minLength": 1},
+        "definition": {"type": "string", "minLength": 1}
+      }
+    },
+    "bandName": {"enum": ["speculative", "tentative", "moderate", "high", "very-high"]},
+    "supportBand": {
+      "type": "object",
+      "required": ["id", "label", "meaning"],
+      "properties": {
+        "id": {"$ref": "#/$defs/bandName"},
+        "label": {"type": "string", "minLength": 1},
+        "meaning": {"type": "string", "minLength": 1},
+        "range": {"type": "string", "pattern": "^[0-9]+-[0-9]+$"}
+      }
+    },
+    "missingState": {"enum": ["not-assessed", "not-applicable"]},
+    "dimensions": {
+      "type": "object",
+      "properties": {
+        "evidence_support": {"oneOf": [{"enum": ["none", "contested", "partial", "indirect", "direct"]}, {"$ref": "#/$defs/missingState"}]},
+        "review_status": {"enum": ["unreviewed", "agent-reviewed", "human-reviewed", "adjudicated", "not-assessed", "not-applicable"]},
+        "calibration": {"enum": ["understated", "matched", "overstated", "not-assessed", "not-applicable"]},
+        "source_integrity": {"enum": ["unverified", "partially-verified", "verified", "not-assessed", "not-applicable"]}
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "required": ["unit", "review_status", "assessed_by", "protocol", "date"],
+      "properties": {
+        "unit": {"enum": ["repository", "artifact", "claim", "claim-evidence"]},
+        "review_status": {"enum": ["unreviewed", "agent-reviewed", "human-reviewed", "adjudicated"]},
+        "assessed_by": {
+          "type": "object",
+          "required": ["humans", "agents"],
+          "properties": {
+            "humans": {"type": "array", "items": {"$ref": "#/$defs/human"}},
+            "agents": {"type": "array", "items": {"$ref": "#/$defs/agent"}}
+          }
+        },
+        "protocol": {"type": "string"},
+        "date": {"type": "string", "format": "date"},
+        "independent_review": {"type": "boolean"},
+        "supersedes": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+        "disagreement": {"type": "string", "minLength": 1},
+        "resolution": {"type": "string", "minLength": 1}
+      }
+    },
+    "counts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "bandCounts": {
+      "type": "object",
+      "properties": {
+        "speculative": {"type": "integer", "minimum": 0},
+        "tentative": {"type": "integer", "minimum": 0},
+        "moderate": {"type": "integer", "minimum": 0},
+        "high": {"type": "integer", "minimum": 0},
+        "very-high": {"type": "integer", "minimum": 0}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^/"},
+        "claims": {"type": "integer", "minimum": 0},
+        "avg": {"type": "number"},
+        "dist": {"$ref": "#/$defs/counts"},
+        "band_distribution": {"$ref": "#/$defs/bandCounts"},
+        "median_band": {"$ref": "#/$defs/bandName"},
+        "dimensions": {"$ref": "#/$defs/dimensions"}
+      }
+    }
+  }
+}
