@@ -2,192 +2,107 @@
 
 **Traceable · Reviewed · Uncertainty-graded · Sourced · Transparent**
 
-A lightweight, human- and machine-readable **epistemic trust manifest** that you
-drop at the root of any repository or website. One file tells readers — and
-machines — how the knowledge in a project was produced, how each claim is graded,
-and how much confidence to place in it.
+TRUST.md is a lightweight human- and machine-readable epistemic manifest for
+knowledge repositories and websites.
 
-**Status: v0.2 — proposed convention**
+**Status: v0.3.0 release candidate — proposed convention**
 
-> Companion convention: [FAIR.md](https://github.com/Neuronautix/FAIR.md) — declares the FAIR
-> posture (Findable, Accessible, Interoperable, Reusable) of the data a
-> repository holds.
+Version 0.3 makes five ordinal evidence-support bands primary, keeps 0–100 only
+as an optional non-probabilistic refinement, separates four assessment
+dimensions, and records who assessed what under which protocol.
 
----
-
-## 30-second example
+## Minimal example
 
 ```yaml
 ---
-TRUST_md_version: "0.1"
-title: "My Project — Trust & Epistemic Provenance Declaration"
-description: >
-  How knowledge in this repository is produced, graded, and reviewed.
-canonical: "https://myproject.example.org/TRUST.md"
+trust_md_version: "0.3"
+title: "My Project — Trust Declaration"
+description: "How this repository's knowledge is produced and assessed."
+canonical: "https://example.org/trust.md"
 license: "CC-BY-4.0"
 companions:
-  fair: "/FAIR.md"
-
+  fair: null
 produced_by:
   humans:
-    - name: "Jane Smith"
-      orcid: "0000-0000-0000-0001"
-      role: "author, domain reviewer, accountable signatory"
-      org: "University of Example"
+    - {name: "Jane Smith", role: "author"}
   agents: []
-
 governance:
-  source_of_truth: >
-    The human-approved record — not raw model output — is the source of truth.
+  source_of_truth: "The human-approved repository record."
   no_fabricated_citations: true
-  review_policy: "Every published claim is human-reviewed."
-  correction_policy: "Errors are corrected in place with a dated note."
-  conflict_of_interest: "No commercial interest in the subject matter."
-
+  review_policy: "A named human reviews the declaration."
+  correction_policy: "Corrections are recorded in version control."
+  conflict_of_interest: "None declared."
 epistemic_model:
   categories:
-    - {id: "cited",      label: "Cited fact",           definition: "Directly supported by a cited source"}
-    - {id: "consensus",  label: "Established consensus", definition: "Widely accepted domain knowledge"}
-    - {id: "inference",  label: "Inference",            definition: "Reasoned from one or more sources"}
-    - {id: "hypothesis", label: "Hypothesis",           definition: "Forward-looking or speculative claim"}
-    - {id: "view",       label: "Author view",          definition: "Interpretation or normative conclusion"}
-  confidence_scale:
-    type: "integer"
-    range: [0, 100]
-    independent_of_category: true
-    bands:
-      - {range: "90-100", label: "Very high",   meaning: "stated in a primary or peer-reviewed source"}
-      - {range: "70-89",  label: "High",        meaning: "stated in a cited source, lightly interpreted"}
-      - {range: "50-69",  label: "Moderate",    meaning: "reasonable inference or consensus"}
-      - {range: "30-49",  label: "Tentative",   meaning: "plausible claim with partial support"}
-      - {range: "0-29",   label: "Speculative", meaning: "opinion or vision with little direct evidence"}
-
-corpus:
-  notes_with_markup: 5
-  total_claims: 120
-  average_: 72
-  category_distribution: {cited: 65, inference: 30, view: 20, consensus: 3, hypothesis: 2}
-
-artifacts:
-  - {path: "/notes/2026-05-example/", claims: 24, avg: 85, dist: {cited: 20, inference: 4}}
-
-limitations:
-  - "Confidence scores are author judgements, not statistical measures."
-  - "Self-declared; not independently audited."
-
-last_reviewed: "2026-06-06"
+    - {id: "cited", label: "Cited fact", definition: "Directly supported by a cited source."}
+  support_bands:
+    - {id: "speculative", label: "Speculative", meaning: "Little or no direct support."}
+    - {id: "tentative", label: "Tentative", meaning: "Limited support."}
+    - {id: "moderate", label: "Moderate", meaning: "Partial or indirect support."}
+    - {id: "high", label: "High", meaning: "Supported with minor interpretation."}
+    - {id: "very-high", label: "Very high", meaning: "Direct and verifiable support."}
+last_reviewed: "2026-07-21"
 ---
 
-# TRUST.md — My Project Trust Declaration
+# My Project trust declaration
 
-This file declares how much you should trust the knowledge in this repository
-and why ...
+This prose explains the declaration to human readers.
 ```
 
----
+No number, aggregate, claim graph, or independent review is required. Honest
+repository-level adoption is conformant.
 
-## Why TRUST.md?
+## The model
 
-Scientific writing — and now AI-assisted scientific writing — mixes *cited fact*,
-*reasoned inference*, *forward-looking hypothesis*, and *the author's own
-position*, usually with no visible distinction between them. As large language
-models help draft more of the literature, the question **"what kind of statement
-is this, and how confident is the author?"** becomes urgent and, today, largely
-unanswerable from the page itself.
+The statement category and assessment dimensions answer different questions:
 
-`TRUST.md` answers it at the level of the whole repository:
+| Field | Question |
+|---|---|
+| Category | What kind of statement is this? |
+| Evidence support | How directly and strongly does evidence support it? |
+| Review status | What review process actually occurred? |
+| Calibration | Does the wording match the available evidence? |
+| Source integrity | Do the citations exist, read accurately, and support the statement? |
 
-- **Provenance of authorship** — which parts are human-written, which are
-  AI-assisted, and what oversight applies.
-- **A grading model** — five epistemic categories and a 0–100 confidence scale.
-- **A corpus profile** — honest aggregate statistics, derivable directly from
-  inline claim markup.
+Dimensions are never summed. Traceability is provenance, not a score. A low
+result is not missing data, and agent agreement is not human validation.
 
-### What TRUST.md is NOT
+See [MODEL.md](MODEL.md) for the normative semantics and [SPEC.md](SPEC.md) for
+the file and validation contract.
 
-`TRUST.md` is deliberately *distinct from* JournalList's **`trust.txt`**, which
-declares an organisation's trusted *relationships* (memberships, ownership,
-vendors). `TRUST.md` is about the *epistemic status of the content itself* — what
-kind of claims it makes and how well-supported they are.
+## Adopt TRUST.md
 
-### Lineage
+1. Copy [TRUST.md](TRUST.md) to the root of your repository.
+2. Fill in authorship and governance honestly.
+3. Choose repository, artifact, claim, or externally stored claim–evidence
+   assessment units.
+4. Add dimensions and review provenance only when the facts are known.
+5. Validate with `python tools/validate.py TRUST.md`.
+6. Commit the canonical repository filename as `TRUST.md` and serve it at
+   `/trust.md`.
+7. Pair it with [FAIR.md](https://github.com/Neuronautix/FAIR.md) when useful.
 
-`TRUST.md` draws on a rich lineage of assertion and provenance vocabularies:
+Existing v0.1 and v0.2 files remain valid. Follow [MIGRATION.md](MIGRATION.md)
+only when you are ready to declare v0.3 semantics.
 
-- **W3C PROV / PAV** — provenance and authoring of assertions; TRUST.md's
-  `produced_by` block maps to PROV-O agents and activities.
-- **Nanopublications** — the assertion + provenance + publication-info pattern;
-  TRUST.md's per-claim model is a pragmatic, web-native cousin.
-- **SEPIO (Monarch Initiative)** — Scientific Evidence and Provenance Information
-  Ontology; the epistemic category model aligns with SEPIO's evidence typing.
-- **Evidence & Conclusion Ontology (ECO)** — formal evidence modelling; ECO codes
-  are a natural extension of TRUST.md's category IDs.
-- **schema.org ClaimReview** — a path to emit each graded claim as harvestable
-  JSON-LD; TRUST.md's inline encoding is designed with this in mind.
-- **JournalList trust.txt** — the naming inspiration; explicitly distinct in scope.
+## Schemas, validation, and examples
 
----
+- Latest schema: [schema/trust.schema.json](schema/trust.schema.json)
+- Frozen schemas: `schema/v0.1/`, `schema/v0.2/`, and `schema/v0.3/`
+- Validator: `python tools/validate.py [path]`
+- Conformance matrix: [CONFORMANCE.md](CONFORMANCE.md)
+- Examples: [examples/](examples/)
 
-## Reference implementation
+The validator returns errors for violated MUST rules, warnings for recommended
+quality checks, and notices for deprecations or ignored unknown fields.
 
-The canonical `TRUST.md` for the Neuronautix knowledge base lives at:
+## Scope
 
-**<https://neuronautix.com/TRUST.md>**
-
-A copy is included in this repository as
-[`examples/neuronautix.TRUST.md`](examples/neuronautix.TRUST.md).
-
----
-
-## How to adopt TRUST.md
-
-1. **Copy** [`TRUST.md`](TRUST.md) (the template in this repo) to the root of
-   your repository or website.
-2. **Fill in** `produced_by` and `governance` honestly — especially the human/AI
-   split and the review policy.
-3. **Adopt the `epistemic_model`** (or your own). The five categories and the
-   0–100 scale can be adjusted for your domain; keep the structure stable so
-   validators can parse it.
-4. **Mark claims inline** in your content using the encoding defined in
-   `epistemic_model.encoding` — so the `corpus` and `artifacts` profiles can be
-   derived automatically rather than manually asserted.
-5. **Serve** the file at `https://yourdomain/TRUST.md`.
-6. **Pair it with [`FAIR.md`](https://github.com/Neuronautix/FAIR.md)** — TRUST.md covers *how
-   trustworthy* the content is; FAIR.md covers *how findable and reusable* it is.
-7. **Review** periodically and update `last_reviewed`.
-
----
-
-## Formal specification
-
-See [`SPEC.md`](SPEC.md) for the complete v0.1 specification, including all
-field definitions, the epistemic model, governance fields, corpus/artifact
-profiles, validation rules, and conformance requirements.
-
-A JSON Schema for the YAML front matter is at
-[`schema/trust.schema.json`](schema/trust.schema.json).
-
----
-
-## Contributing
-
-This is a proposed convention, not yet a standard. Feedback, issues, and pull
-requests are welcome:
-
-- Open an issue to discuss extensions to the epistemic model (additional
-  categories, second confidence axis) or alignment with ECO/SEPIO/nanopubs.
-- Submit a PR with a worked `examples/` entry to show TRUST.md in a new domain.
-- Reference the formal spec in SPEC.md when proposing changes — keep changes
-  backward-compatible within the 0.x series.
-
-The convention follows [Semantic Versioning](https://semver.org/): patch releases
-for clarifications, minor releases for additive changes, major releases for
-breaking changes.
-
----
+TRUST.md is an epistemic front door, not a replacement for W3C PROV,
+nanopublications, SEPIO, ECO, evidence-management systems, or scientific peer
+review. It is distinct from JournalList `trust.txt`, which describes trusted
+organizational relationships.
 
 ## License
 
-Apache-2.0. See [`LICENSE`](LICENSE).
-
-Copyright 2026 Damien Huzard / Neuronautix.
+Apache-2.0. Copyright 2026 Damien Huzard / Neuronautix.
