@@ -72,7 +72,8 @@ the file and validation contract.
 
 ## Adopt TRUST.md
 
-1. Copy [TRUST.md](TRUST.md) to the root of your repository.
+1. Copy [TRUST.md](TRUST.md) to the root of your repository. It is an
+   explicitly unassessed template: replace every `REPLACE` value before use.
 2. Fill in authorship and governance honestly.
 3. Choose repository, artifact, claim, or externally stored claim–evidence
    assessment units.

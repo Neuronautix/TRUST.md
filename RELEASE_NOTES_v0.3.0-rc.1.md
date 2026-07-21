@@ -20,6 +20,9 @@ requirements.
 - Unknown fields and `average_trust` are notices, not errors.
 - No file is migrated automatically.
 - Existing tags must remain immutable.
+- Frozen schema identifiers resolve through this immutable rc.1 distribution.
+- The root template is deliberately unassessed and contains no fictional
+  reviewer provenance or corpus results.
 
 ## Review this candidate
 

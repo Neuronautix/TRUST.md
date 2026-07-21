@@ -36,6 +36,11 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   single-point bands such as `100-100`.
 - Schema/CLI version, format, extension, and CI drift.
 - Invalid README example, stale v0.1/v0.2 wording, casing, and links.
+- Root template no longer contains fictional review provenance or assessment
+  results that could be copied as real declarations.
+- Versioned schema identifiers are pinned to the immutable rc.1 distribution,
+  and unknown-field notices now traverse nested objects and arrays.
+- Added an explicit v0.1 fixture and regression test.
 
 ## [0.2] — 2026-06-08
 

@@ -47,23 +47,66 @@ def _schema(version: str) -> dict[str, Any]:
         return json.load(stream)
 
 
-def _unknown_notices(instance: Any, schema: dict[str, Any], path: str = "") -> list[str]:
-    """Report visible unknown keys without changing their conformance status."""
-    if not isinstance(instance, dict) or schema.get("type") != "object":
+def _resolve_local_ref(schema: dict[str, Any], root_schema: dict[str, Any]) -> dict[str, Any]:
+    """Resolve a local JSON Pointer used by the bundled schemas."""
+    reference = schema.get("$ref")
+    if not isinstance(reference, str) or not reference.startswith("#/"):
+        return schema
+    target: Any = root_schema
+    for token in reference[2:].split("/"):
+        token = token.replace("~1", "/").replace("~0", "~")
+        if not isinstance(target, dict) or token not in target:
+            return schema
+        target = target[token]
+    return target if isinstance(target, dict) else schema
+
+
+def _unknown_notices(
+    instance: Any,
+    schema: dict[str, Any],
+    path: str = "",
+    root_schema: dict[str, Any] | None = None,
+) -> list[str]:
+    """Report unknown nested keys without changing conformance status."""
+    root_schema = schema if root_schema is None else root_schema
+    schema = _resolve_local_ref(schema, root_schema)
+
+    if isinstance(instance, list):
+        item_schema = schema.get("items")
+        if not isinstance(item_schema, dict):
+            return []
+        notices: list[str] = []
+        for index, value in enumerate(instance):
+            child_path = f"{path}[{index}]" if path else f"[{index}]"
+            notices.extend(
+                _unknown_notices(value, item_schema, child_path, root_schema)
+            )
+        return notices
+
+    if not isinstance(instance, dict):
         return []
+
     known = schema.get("properties", {})
-    if isinstance(schema.get("additionalProperties"), dict) and not known:
-        return []
-    notices: list[str] = []
+    if not isinstance(known, dict):
+        known = {}
+    additional = schema.get("additionalProperties", True)
+    notices = []
     for key, value in instance.items():
         child_path = f"{path}.{key}" if path else key
-        if key not in known:
-            if not key.startswith("x_"):
-                notices.append(f"unknown field ignored: {child_path}")
+        child_schema = known.get(key)
+        if isinstance(child_schema, dict):
+            notices.extend(
+                _unknown_notices(value, child_schema, child_path, root_schema)
+            )
             continue
-        child_schema = known[key]
-        if "$ref" not in child_schema:
-            notices.extend(_unknown_notices(value, child_schema, child_path))
+        if isinstance(additional, dict):
+            # Dynamic keys are defined by their value schema, for example
+            # category distributions and additional companion paths.
+            notices.extend(
+                _unknown_notices(value, additional, child_path, root_schema)
+            )
+        elif not key.startswith("x_"):
+            notices.append(f"unknown field ignored: {child_path}")
     return notices
 
 
@@ -194,7 +237,7 @@ def validate(path: str | Path) -> tuple[list[str], list[str], list[str]]:
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
     for error in sorted(validator.iter_errors(data), key=lambda item: list(item.absolute_path)):
         errors.append(f"{_path(error)}: {error.message}")
-    notices.extend(_unknown_notices(data, schema))
+    notices.extend(_unknown_notices(data, schema, root_schema=schema))
 
     if version == "0.3":
         _check_v03(data, errors, warnings, notices)

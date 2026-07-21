@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/Neuronautix/TRUST.md/v0.3.0/schema/v0.3/trust.schema.json",
+  "$id": "https://raw.githubusercontent.com/Neuronautix/TRUST.md/v0.3.0-rc.1/schema/v0.3/trust.schema.json",
   "title": "TRUST.md v0.3 YAML front matter",
   "type": "object",
   "required": ["trust_md_version", "title", "description", "canonical", "license", "companions", "produced_by", "governance", "epistemic_model", "last_reviewed"],

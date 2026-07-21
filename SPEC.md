@@ -154,4 +154,6 @@ See [CONFORMANCE.md](CONFORMANCE.md) for the machine/human review boundary.
 Schemas under `schema/v0.1/` and `schema/v0.2/` are frozen. Version 0.3 is
 additive; it does not reinterpret declarations that still declare an earlier
 version. Deprecations and unknown fields are notices, not errors. Breaking
-removal of legacy fields is deferred to a future v1.0.
+removal of legacy fields is deferred to a future v1.0. The distributed schema
+identifiers are pinned to the immutable `v0.3.0-rc.1` release bundle; the URLs
+become resolvable when that tag is published from verified merged `main`.
