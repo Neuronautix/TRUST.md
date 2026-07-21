@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import yaml
@@ -108,3 +109,9 @@ def test_protocol_provenance_round_trips_without_type_loss():
     assert round_tripped == original
     assert isinstance(round_tripped["independent_review"], bool)
     assert isinstance(round_tripped["date"], str)
+
+
+def test_latest_schema_is_the_versioned_v03_schema():
+    latest = json.loads((ROOT / "schema" / "trust.schema.json").read_text(encoding="utf-8"))
+    versioned = json.loads((ROOT / "schema" / "v0.3" / "trust.schema.json").read_text(encoding="utf-8"))
+    assert latest == versioned
