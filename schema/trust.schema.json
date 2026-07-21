@@ -60,7 +60,13 @@
           }
         },
         "dimensions": {"$ref": "#/$defs/dimensions"},
-        "encoding": {"type": "object"},
+        "encoding": {
+          "type": "object",
+          "properties": {
+            "inline": {"type": "string", "minLength": 1},
+            "reader_tooling": {"type": "string", "minLength": 1}
+          }
+        },
         "alignment": {"type": "array", "items": {"type": "string", "minLength": 1}}
       }
     },
