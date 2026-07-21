@@ -1,0 +1,375 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Neuronautix/TRUST.md/v0.1/schema/v0.1/trust.schema.json",
+  "title": "trust.md YAML front-matter schema",
+  "description": "JSON Schema (draft 2020-12) for the YAML front matter of a trust.md file conforming to the trust.md specification v0.2 (backward-compatible with v0.1). Apply to the parsed YAML object (the front-matter block between the --- delimiters).",
+  "type": "object",
+  "required": [
+    "trust_md_version",
+    "title",
+    "description",
+    "canonical",
+    "license",
+    "companions",
+    "produced_by",
+    "governance",
+    "epistemic_model",
+    "last_reviewed"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "trust_md_version": {
+      "type": "string",
+      "const": "0.1",
+      "description": "Version of the trust.md specification this file conforms to."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Short, human-readable name for this trust declaration."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Brief description of what this trust declaration covers."
+    },
+    "canonical": {
+      "type": "string",
+      "format": "uri",
+      "description": "Stable URL where this trust.md file is served."
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1,
+      "description": "SPDX license identifier for this trust declaration document."
+    },
+    "companions": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/companionPath"
+      },
+      "description": "Paths to companion artifacts.",
+      "properties": {
+        "fair": {
+          "$ref": "#/$defs/companionPath"
+        },
+        "inline_markup_spec": {
+          "$ref": "#/$defs/companionPath"
+        }
+      }
+    },
+    "produced_by": {
+      "type": "object",
+      "required": ["humans", "agents"],
+      "additionalProperties": false,
+      "description": "Declares the human and AI contributors to the knowledge in this repository.",
+      "properties": {
+        "humans": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Human contributors. At least one MUST be listed.",
+          "items": {
+            "type": "object",
+            "required": ["name", "role"],
+            "additionalProperties": true,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Full name of the contributor."
+              },
+              "orcid": {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$",
+                "description": "ORCID iD in the format 0000-0000-0000-000X."
+              },
+              "role": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Role(s) with respect to the repository."
+              },
+              "org": {
+                "type": "string",
+                "description": "Institutional affiliation."
+              }
+            }
+          }
+        },
+        "agents": {
+          "type": "array",
+          "description": "AI/automated agents involved in producing content. Use [] if none.",
+          "items": {
+            "type": "object",
+            "required": ["name", "role", "oversight"],
+            "additionalProperties": true,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Name of the AI system or automated tool."
+              },
+              "role": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What the agent does."
+              },
+              "oversight": {
+                "type": "string",
+                "enum": ["human-reviewed", "human-in-the-loop", "automated", "none"],
+                "description": "Human oversight level."
+              }
+            }
+          }
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": [
+        "source_of_truth",
+        "no_fabricated_citations",
+        "review_policy",
+        "correction_policy",
+        "conflict_of_interest"
+      ],
+      "additionalProperties": true,
+      "description": "Editorial policies governing content reliability.",
+      "properties": {
+        "source_of_truth": {
+          "type": "string",
+          "minLength": 1,
+          "description": "States what the authoritative record is."
+        },
+        "no_fabricated_citations": {
+          "type": "boolean",
+          "description": "Explicit commitment that citations are verified, not fabricated."
+        },
+        "review_policy": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Describes how claims are reviewed before publication."
+        },
+        "correction_policy": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Describes how errors are corrected after publication."
+        },
+        "conflict_of_interest": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Discloses any commercial or personal interests that may influence content."
+        }
+      }
+    },
+    "epistemic_model": {
+      "type": "object",
+      "required": ["categories", "confidence_scale"],
+      "additionalProperties": true,
+      "description": "Defines the grading model for epistemic categories and confidence.",
+      "properties": {
+        "categories": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Epistemic category taxonomy.",
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "definition"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]+$",
+                "description": "Unique identifier for this category (no spaces)."
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Short human-readable label."
+              },
+              "definition": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Plain-language definition."
+              }
+            }
+          }
+        },
+        "confidence_scale": {
+          "type": "object",
+          "required": ["type", "range", "independent_of_category", "bands"],
+          "additionalProperties": false,
+          "description": "Numerical confidence axis definition.",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "integer",
+              "description": "Data type for confidence values. MUST be 'integer'."
+            },
+            "range": {
+              "type": "array",
+              "prefixItems": [
+                {"type": "integer", "const": 0},
+                {"type": "integer", "const": 100}
+              ],
+              "minItems": 2,
+              "maxItems": 2,
+              "items": false,
+              "description": "[min, max] of the confidence scale. MUST be [0, 100]."
+            },
+            "independent_of_category": {
+              "type": "boolean",
+              "const": true,
+              "description": "Whether category and confidence are independent axes. MUST be true."
+            },
+            "bands": {
+              "type": "array",
+              "minItems": 5,
+              "description": "Human-interpretable confidence bands. At least five REQUIRED.",
+              "items": {
+                "type": "object",
+                "required": ["range", "label", "meaning"],
+                "additionalProperties": false,
+                "properties": {
+                  "range": {
+                    "type": "string",
+                    "pattern": "^[0-9]+-[0-9]+$",
+                    "description": "Inclusive integer range, e.g. '90-100'."
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Short label for this band."
+                  },
+                  "meaning": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Plain-language definition of what this score means."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "encoding": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Optional description of inline claim markup encoding.",
+          "properties": {
+            "inline": {
+              "type": "string",
+              "description": "The inline encoding syntax."
+            },
+            "reader_tooling": {
+              "type": "string",
+              "description": "Description of reader-facing tooling that renders the markup."
+            }
+          }
+        },
+        "alignment": {
+          "type": "array",
+          "description": "Formal standards to which the epistemic model aligns.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "corpus": {
+      "type": "object",
+      "required": ["notes_with_markup", "total_claims", "average_trust", "category_distribution"],
+      "additionalProperties": true,
+      "description": "Aggregate trust statistics for the marked corpus.",
+      "properties": {
+        "notes_with_markup": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of content items with inline claim markup."
+        },
+        "total_claims": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of graded claims across the corpus."
+        },
+        "average_trust": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Mean confidence score across all marked claims (0–100)."
+        },
+        "category_distribution": {
+          "type": "object",
+          "description": "Count of claims per category id.",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "description": "Per-artifact trust profiles, ordered by avg descending.",
+      "items": {
+        "type": "object",
+        "required": ["path", "claims", "avg", "dist"],
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^/",
+            "description": "Root-relative path to the artifact."
+          },
+          "claims": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total graded claims in this artifact."
+          },
+          "avg": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Mean confidence score for this artifact."
+          },
+          "dist": {
+            "type": "object",
+            "description": "Claim counts per category id.",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "description": "Known limitations of this self-declaration.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "last_reviewed": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "format": "date",
+      "description": "ISO 8601 date (YYYY-MM-DD) of the last review."
+    }
+  },
+  "$defs": {
+    "companionPath": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^/",
+          "description": "Root-relative path to the companion artifact."
+        },
+        {
+          "type": "null",
+          "description": "null if the companion artifact does not exist yet."
+        }
+      ]
+    }
+  }
+}
