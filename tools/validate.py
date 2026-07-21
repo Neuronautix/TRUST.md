@@ -118,16 +118,19 @@ def _parse_range(value: Any) -> tuple[int, int] | None:
 def _check_support_model(
     data: dict[str, Any], errors: list[str], warnings: list[str]
 ) -> None:
-    raw_model = data.get("epistemic_model")
-    model: dict[str, Any] = raw_model if isinstance(raw_model, dict) else {}
+    model = data.get("epistemic_model") or {}
+    if not isinstance(model, dict):
+        return
     bands = model.get("support_bands") or []
+    if not isinstance(bands, list):
+        return
     ids = tuple(band.get("id") for band in bands if isinstance(band, dict))
     if ids and ids != CANONICAL_BANDS:
         errors.append("epistemic_model.support_bands must use canonical ids in ascending support order")
 
     confidence = model.get("confidence_scale")
     ranges = [_parse_range(band.get("range")) for band in bands if isinstance(band, dict)]
-    if confidence is not None:
+    if isinstance(confidence, dict):
         if any(item is None for item in ranges):
             errors.append("each support band needs a numeric range when confidence_scale is present")
         elif ranges:
@@ -150,12 +153,15 @@ def _check_v03(data: dict[str, Any], errors: list[str], warnings: list[str], not
     _check_support_model(data, errors, warnings)
 
     corpus = data.get("corpus") or {}
+    if not isinstance(corpus, dict):
+        corpus = {}
     if "average_trust" in corpus:
         notices.append("corpus.average_trust is deprecated; prefer band_distribution")
     distribution = corpus.get("band_distribution")
     total = corpus.get("total_claims")
     if isinstance(distribution, dict) and isinstance(total, int):
-        if sum(distribution.values()) != total:
+        counts = tuple(distribution.values())
+        if all(isinstance(value, int) and not isinstance(value, bool) for value in counts) and sum(counts) != total:
             warnings.append("corpus.band_distribution counts do not sum to total_claims")
         expected_median = _median_band(distribution)
         if corpus.get("median_band") and corpus["median_band"] != expected_median:
@@ -168,16 +174,20 @@ def _check_v03(data: dict[str, Any], errors: list[str], warnings: list[str], not
         return
     status = assessment.get("review_status")
     assessors = assessment.get("assessed_by") or {}
-    humans = assessors.get("humans") or []
-    agents = assessors.get("agents") or []
-    if REVIEW_ORDER.get(status, 0) > 0:
+    if isinstance(assessors, dict):
+        humans = assessors.get("humans") or []
+        agents = assessors.get("agents") or []
+    else:
+        humans = []
+        agents = []
+    if isinstance(status, str) and REVIEW_ORDER.get(status, 0) > 0:
         if not humans and not agents:
             errors.append("reviewed assessment requires an identifiable assessor")
         if not str(assessment.get("protocol", "")).strip():
             errors.append("reviewed assessment requires a non-empty protocol")
         if not assessment.get("date"):
             errors.append("reviewed assessment requires a date")
-    if status in {"human-reviewed", "adjudicated"} and not humans:
+    if isinstance(status, str) and status in {"human-reviewed", "adjudicated"} and not humans:
         errors.append(f"{status} requires an identifiable human assessor")
     if status == "adjudicated":
         if not assessment.get("disagreement") or not assessment.get("resolution"):
@@ -185,14 +195,13 @@ def _check_v03(data: dict[str, Any], errors: list[str], warnings: list[str], not
     if assessment.get("unit") == "claim-evidence" and not (data.get("companions") or {}).get("claim_records"):
         errors.append("claim-evidence assessments require companions.claim_records")
     if assessment.get("independent_review") is True:
-        producers = {
-            person.get("name", "").strip().casefold()
-            for person in (data.get("produced_by") or {}).get("humans", [])
-        }
-        reviewers = {
-            person.get("name", "").strip().casefold()
-            for person in humans
-        }
+        produced_by = data.get("produced_by") or {}
+        producers = _person_names(
+            produced_by.get("humans") or []
+            if isinstance(produced_by, dict)
+            else []
+        )
+        reviewers = _person_names(humans)
         if not reviewers or reviewers <= producers:
             errors.append("independent_review requires a named human not listed in produced_by.humans")
 
@@ -203,6 +212,20 @@ def _replace_notice(notices: list[str], old: str, new: str) -> None:
         notices.remove(old)
     if new not in notices:
         notices.append(new)
+
+
+def _person_names(people: Any) -> set[str]:
+    """Return normalized, non-empty names from structurally valid people."""
+    if not isinstance(people, list):
+        return set()
+    names: set[str] = set()
+    for person in people:
+        if not isinstance(person, dict):
+            continue
+        name = person.get("name")
+        if isinstance(name, str) and name.strip():
+            names.add(name.strip().casefold())
+    return names
 
 
 def _check_v04(
@@ -238,6 +261,8 @@ def _check_v04(
         errors.append("v0.4 prohibits top-level aggregation across assessments")
 
     subjects = data.get("subjects") or []
+    if not isinstance(subjects, list):
+        subjects = []
     subject_ids: set[str] = set()
     for index, subject in enumerate(subjects):
         if not isinstance(subject, dict):
@@ -250,6 +275,8 @@ def _check_v04(
         subject_ids.add(subject_id)
 
     assessments = data.get("assessments") or []
+    if not isinstance(assessments, list):
+        assessments = []
     assessment_ids: set[str] = set()
     series_versions: set[tuple[str, str]] = set()
     by_id: dict[str, dict[str, Any]] = {}
@@ -285,36 +312,31 @@ def _check_v04(
         status = assessment.get("review_status")
         assessors = assessment.get("assessed_by") or {}
         if isinstance(assessors, dict):
-            humans = assessors.get("humans") or []
-            agents = assessors.get("agents") or []
+            raw_humans = assessors.get("humans") or []
+            raw_agents = assessors.get("agents") or []
+            humans = raw_humans if isinstance(raw_humans, list) else []
+            agents = raw_agents if isinstance(raw_agents, list) else []
         else:
             humans = []
             agents = []
-        if REVIEW_ORDER.get(status, 0) > 0 and not humans and not agents:
+        if isinstance(status, str) and REVIEW_ORDER.get(status, 0) > 0 and not humans and not agents:
             errors.append(f"assessments[{index}] reviewed assessment requires an identifiable assessor")
 
         independence = assessment.get("independence")
-        if independence in {"declared-partially-independent", "declared-independent"}:
+        if isinstance(independence, str) and independence in {
+            "declared-partially-independent",
+            "declared-independent",
+        }:
             producers = data.get("produced_by") or {}
-            producer_people = []
             if isinstance(producers, dict):
-                producer_people = (producers.get("humans") or []) + (
+                producer_names = _person_names(
+                    producers.get("humans") or []
+                ) | _person_names(
                     producers.get("agents") or []
                 )
-            producer_names = {
-                person["name"].strip().casefold()
-                for person in producer_people
-                if isinstance(person, dict)
-                and isinstance(person.get("name"), str)
-                and person["name"].strip()
-            }
-            assessor_names = {
-                person["name"].strip().casefold()
-                for person in humans + agents
-                if isinstance(person, dict)
-                and isinstance(person.get("name"), str)
-                and person["name"].strip()
-            }
+            else:
+                producer_names = set()
+            assessor_names = _person_names(humans) | _person_names(agents)
             if not assessor_names or not (assessor_names - producer_names):
                 errors.append(
                     f"assessments[{index}].independence requires an identifiable "
@@ -323,7 +345,13 @@ def _check_v04(
 
         dimensions = assessment.get("dimensions") or {}
         if isinstance(dimensions, dict):
-            for forbidden in ("review_status", "reuse_count", "citations", "popularity", "downloads"):
+            for forbidden in (
+                "review_status",
+                "reuse_count",
+                "citations",
+                "downloads",
+                "popularity",
+            ):
                 if forbidden not in dimensions:
                     continue
                 path = f"assessments[{index}].dimensions.{forbidden}"
@@ -389,7 +417,7 @@ def _check_v04(
             )
         if assessment.get("subject") != by_id[target].get("subject"):
             errors.append(
-                f"assessments[{index}].supersedes must reference an assessment with the same subject"
+                f"assessments[{index}].supersedes must reference the same subject"
             )
         edges[source] = target
 
@@ -410,22 +438,23 @@ def _check_v04(
             current = edges[current]
 
 
-def _median_band(distribution: dict[str, Any]) -> str | None:
+def _median_band(distribution: Any) -> str | None:
     """Return the lower-support middle band for an even-sized population."""
     if not isinstance(distribution, dict):
         return None
-    band_counts = {
-        band: v
-        for band in CANONICAL_BANDS
-        if isinstance(v := distribution.get(band, 0), int)
-    }
-    count = sum(band_counts.values())
+    counts: dict[str, int] = {}
+    for band in CANONICAL_BANDS:
+        value = distribution.get(band, 0)
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            return None
+        counts[band] = value
+    count = sum(counts.values())
     if not count:
         return None
     lower_position = (count - 1) // 2
     seen = 0
     for band in CANONICAL_BANDS:
-        seen += band_counts.get(band, 0)
+        seen += counts[band]
         if lower_position < seen:
             return band
     return None

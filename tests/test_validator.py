@@ -436,6 +436,12 @@ def test_v04_reuse_is_impact_not_a_dimension(tmp_path):
     errors, _, _ = validate(write_v04_manifest(tmp_path, invalid_dimension))
     assert any("not a v0.4 quality dimension" in error for error in errors)
 
+    def invalid_downloads(data):
+        data["assessments"][0]["dimensions"]["downloads"] = 100
+
+    errors, _, _ = validate(write_v04_manifest(tmp_path, invalid_downloads))
+    assert any("dimensions.downloads is not a v0.4 quality dimension" in error for error in errors)
+
 
 def test_v04_conflicting_assessments_coexist_without_aggregation(tmp_path):
     def mutate(data):
@@ -486,6 +492,28 @@ def test_v04_supersession_requires_same_series_and_has_no_cycles(tmp_path):
 
     errors, _, _ = validate(write_v04_manifest(tmp_path, cycle))
     assert any("supersession cycle" in error for error in errors)
+
+
+def test_v04_supersession_cannot_switch_subject(tmp_path):
+    def mutate(data):
+        data["subjects"].append({
+            "id": "subject-002",
+            "type": "evidence-record",
+            "identifier": "https://example.org/evidence/record-002",
+            "version": "1.0",
+        })
+        first = data["assessments"][0]
+        second = yaml.safe_load(yaml.safe_dump(first))
+        second.update({
+            "id": "https://example.org/assessments/series-001/versions/2",
+            "version": "2",
+            "subject": "subject-002",
+            "supersedes": first["id"],
+        })
+        data["assessments"].append(second)
+
+    errors, _, _ = validate(write_v04_manifest(tmp_path, mutate))
+    assert any("supersedes must reference the same subject" in error for error in errors)
 
 
 def test_v04_external_supersession_target_is_a_warning(tmp_path):
@@ -600,3 +628,45 @@ def test_v04_unknown_nested_field_is_an_ignored_field_notice(tmp_path):
     assert (
         "unknown field ignored: assessments[0].protocol.versoin" in notices
     )
+
+
+def test_v04_semantic_checks_return_errors_for_malformed_nodes(tmp_path):
+    def malformed_model(data):
+        data["epistemic_model"] = "not-a-mapping"
+
+    def malformed_distribution(data):
+        data["assessments"][0]["summary"] = {
+            "scope": "assessment",
+            "band_distribution": {"high": "many"},
+            "median_band": "high",
+        }
+
+    def malformed_status(data):
+        data["assessments"][0]["review_status"] = ["human-reviewed"]
+
+    def malformed_collections(data):
+        data["subjects"] = "not-an-array"
+        data["assessments"] = {"not": "an-array"}
+
+    for mutate in (
+        malformed_model,
+        malformed_distribution,
+        malformed_status,
+        malformed_collections,
+    ):
+        errors, _, _ = validate(write_v04_manifest(tmp_path, mutate))
+        assert errors
+
+
+def test_v04_independence_requires_a_nonblank_string_name(tmp_path):
+    def blank_name(data):
+        data["assessments"][0]["assessed_by"]["humans"][0]["name"] = " "
+
+    errors, _, _ = validate(write_v04_manifest(tmp_path, blank_name))
+    assert any("independence requires an identifiable assessor" in error for error in errors)
+
+    def nonstring_name(data):
+        data["assessments"][0]["assessed_by"]["humans"][0]["name"] = 42
+
+    errors, _, _ = validate(write_v04_manifest(tmp_path, nonstring_name))
+    assert errors
