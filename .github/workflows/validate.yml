@@ -29,4 +29,4 @@ jobs:
           done
 
       - name: Run schema and validator tests
-        run: pytest -q
+        run: python -m pytest -q
