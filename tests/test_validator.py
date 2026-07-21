@@ -8,6 +8,7 @@ from tools.validate import _median_band, split_front_matter, validate
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests" / "fixtures" / "minimal-v0.3.trust.md"
+V01_FIXTURE = ROOT / "tests" / "fixtures" / "minimal-v0.1.trust.md"
 
 
 def write_manifest(tmp_path, mutate):
@@ -29,6 +30,13 @@ def test_v03_fixture_is_clean():
 def test_frozen_v02_reference_remains_valid():
     errors, _, _ = validate(ROOT / "examples" / "neuronautix.trust.md")
     assert errors == []
+
+
+def test_frozen_v01_fixture_remains_valid():
+    errors, warnings, notices = validate(V01_FIXTURE)
+    assert errors == []
+    assert warnings == []
+    assert notices == []
 
 
 def test_unknown_version_is_distinct(tmp_path):
@@ -95,6 +103,27 @@ def test_unknown_standard_field_is_a_notice(tmp_path):
     assert "unknown field ignored: mispelled_field" in notices
 
 
+def test_unknown_nested_field_is_a_notice(tmp_path):
+    def mutate(data):
+        data["epistemic_model"]["support_bands"][0]["meening"] = "typo"
+
+    errors, _, notices = validate(write_manifest(tmp_path, mutate))
+    assert errors == []
+    assert (
+        "unknown field ignored: epistemic_model.support_bands[0].meening"
+        in notices
+    )
+
+
+def test_private_nested_extension_is_not_a_notice(tmp_path):
+    def mutate(data):
+        data["epistemic_model"]["support_bands"][0]["x_ontology_term"] = "ECO:0000000"
+
+    errors, _, notices = validate(write_manifest(tmp_path, mutate))
+    assert errors == []
+    assert notices == []
+
+
 def test_deprecated_average_is_only_a_notice(tmp_path):
     path = write_manifest(tmp_path, lambda data: data["corpus"].update(average_trust=72))
     errors, _, notices = validate(path)
@@ -115,3 +144,29 @@ def test_latest_schema_is_the_versioned_v03_schema():
     latest = json.loads((ROOT / "schema" / "trust.schema.json").read_text(encoding="utf-8"))
     versioned = json.loads((ROOT / "schema" / "v0.3" / "trust.schema.json").read_text(encoding="utf-8"))
     assert latest == versioned
+
+
+def test_frozen_schema_ids_are_pinned_to_the_rc_distribution():
+    for version in ("0.1", "0.2", "0.3"):
+        schema = json.loads(
+            (ROOT / "schema" / f"v{version}" / "trust.schema.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        assert schema["$id"] == (
+            "https://raw.githubusercontent.com/Neuronautix/TRUST.md/"
+            f"v0.3.0-rc.1/schema/v{version}/trust.schema.json"
+        )
+
+
+def test_root_template_is_valid_and_contains_no_assessment_claims():
+    template = ROOT / "TRUST.md"
+    errors, warnings, notices = validate(template)
+    assert errors == []
+    assert warnings == []
+    assert notices == []
+    yaml_text, _ = split_front_matter(template.read_text(encoding="utf-8"))
+    data = yaml.safe_load(yaml_text)
+    assert "assessment" not in data
+    assert "dimensions" not in data["epistemic_model"]
+    assert "corpus" not in data
