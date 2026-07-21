@@ -670,3 +670,155 @@ def test_v04_independence_requires_a_nonblank_string_name(tmp_path):
 
     errors, _, _ = validate(write_v04_manifest(tmp_path, nonstring_name))
     assert errors
+
+
+def load_front_matter(path):
+    yaml_text, _ = split_front_matter(path.read_text(encoding="utf-8"))
+    return yaml.safe_load(yaml_text)
+
+
+def test_v04_public_examples_are_clean():
+    examples = sorted((ROOT / "examples").glob("v04-*.trust.md"))
+    examples.append(ROOT / "examples" / "migration" / "v04-after-v03.trust.md")
+    assert {path.name for path in examples} == {
+        "v04-after-v03.trust.md",
+        "v04-lifecycle.trust.md",
+        "v04-missing-states.trust.md",
+        "v04-multiple-assessments.trust.md",
+        "v04-no-assessment.trust.md",
+        "v04-single-assessment.trust.md",
+    }
+    for path in examples:
+        errors, warnings, notices = validate(path)
+        assert (errors, warnings, notices) == ([], [], []), path
+
+
+def test_v04_examples_cover_plural_contextual_assessment_cases():
+    data = load_front_matter(
+        ROOT / "examples" / "v04-multiple-assessments.trust.md"
+    )
+    assessments = data["assessments"]
+    assert len(assessments) == 4
+    assert {item["subject"] for item in assessments} == {"subject-001"}
+    assert assessments[0]["purpose"] == assessments[1]["purpose"]
+    assert {
+        assessments[0]["fitness_for_purpose"],
+        assessments[1]["fitness_for_purpose"],
+    } == {"suitable", "not-suitable"}
+    assert assessments[2]["purpose"] != assessments[0]["purpose"]
+    assert assessments[2]["review_status"] == "human-reviewed"
+    assert assessments[2]["assessed_by"]["humans"]
+    assert assessments[2]["assessed_by"]["agents"]
+    assert assessments[3]["review_status"] == "agent-reviewed"
+    assert assessments[3]["assessed_by"]["humans"] == []
+    assert "corpus" not in data
+
+
+def test_v04_no_assessment_and_impact_examples_do_not_imply_quality():
+    no_assessment = load_front_matter(
+        ROOT / "examples" / "v04-no-assessment.trust.md"
+    )
+    assert no_assessment["subjects"]
+    assert no_assessment["assessments"] == []
+
+    single = load_front_matter(
+        ROOT / "examples" / "v04-single-assessment.trust.md"
+    )
+    assert single["x_reuse_metrics"]["reuse_count"] == 12
+    assert "reuse_count" not in single["assessments"][0]["dimensions"]
+
+
+def test_v04_lifecycle_examples_leave_subjects_unchanged():
+    data = load_front_matter(ROOT / "examples" / "v04-lifecycle.trust.md")
+    assert "status" not in data["subjects"][0]
+    assert {item["status"] for item in data["assessments"]} == {
+        "active",
+        "superseded",
+        "withdrawn",
+        "retracted",
+    }
+    for item in data["assessments"]:
+        if item["status"] in {"superseded", "withdrawn", "retracted"}:
+            assert item["supersedes"]
+            assert item["lifecycle_reason"]
+    supersession = data["assessments"][1]
+    assert supersession["series_id"] in supersession["supersedes"]
+    assert "within this assessment series" in supersession["lifecycle_reason"]
+
+
+def test_v04_missing_state_example_preserves_four_meanings():
+    data = load_front_matter(ROOT / "examples" / "v04-missing-states.trust.md")
+    assessments = data["assessments"]
+    assert "evidence_support" not in assessments[0]["dimensions"]
+    assert assessments[1]["dimensions"]["evidence_support"] == "not-assessed"
+    assert assessments[2]["dimensions"]["evidence_support"] == "not-applicable"
+    assert assessments[3]["dimensions"]["evidence_support"] == "none"
+
+
+def test_v03_to_v04_migration_pair_is_explicit_and_meaning_preserving():
+    before_path = ROOT / "examples" / "migration" / "v03-before-v04.trust.md"
+    after_path = ROOT / "examples" / "migration" / "v04-after-v03.trust.md"
+    before = load_front_matter(before_path)
+    after = load_front_matter(after_path)
+
+    errors, warnings, notices = validate(before_path)
+    assert errors == []
+    assert warnings == []
+    assert notices == [
+        "corpus.average_trust is deprecated; prefer band_distribution"
+    ]
+    assert validate(after_path) == ([], [], [])
+    assert before["trust_md_version"] == "0.3"
+    assert after["trust_md_version"] == "0.4"
+    assert len(after["assessments"]) == 1
+    migrated = after["assessments"][0]
+    assert migrated["review_status"] == before["assessment"]["review_status"]
+    assert migrated["assessed_by"] == before["assessment"]["assessed_by"]
+    assert migrated["assessed_at"] == f'{before["assessment"]["date"]}T00:00:00Z'
+    assert migrated["assessed_at_precision"] == "date"
+    assert "review_status" not in migrated["dimensions"]
+    assert after["x_migration"]["legacy_average_trust"] == 80
+    population = after["x_migration"]["legacy_summary_population"]
+    assert population == {
+        "unit": "claims",
+        "count": before["corpus"]["total_claims"],
+        "source_scope": "corpus",
+    }
+    assert sum(migrated["summary"]["band_distribution"].values()) == population[
+        "count"
+    ]
+
+
+def test_v04_valid_fixtures_and_provenance_round_trip():
+    fixture_dir = ROOT / "tests" / "fixtures" / "v0.4"
+    valid = sorted(fixture_dir.glob("*-valid.trust.md"))
+    assert {path.name for path in valid} == {
+        "minimal-valid.trust.md",
+        "provenance-roundtrip-valid.trust.md",
+    }
+    for path in valid:
+        assert validate(path) == ([], [], [])
+
+    original = load_front_matter(
+        fixture_dir / "provenance-roundtrip-valid.trust.md"
+    )["assessments"][0]
+    round_tripped = yaml.safe_load(yaml.safe_dump(original, sort_keys=False))
+    assert round_tripped == original
+    assert isinstance(round_tripped["numeric_refinement"]["value"], int)
+    assert isinstance(round_tripped["numeric_refinement"]["not_probability"], bool)
+    assert isinstance(round_tripped["x_protocol_parameters"]["threshold"], float)
+    assert isinstance(round_tripped["x_protocol_parameters"]["labels"], list)
+
+
+def test_v04_invalid_fixture_diagnostics_are_stable():
+    fixture_dir = ROOT / "tests" / "fixtures" / "v0.4"
+    expected = {
+        "malformed-subject-identifier.invalid.trust.md": "does not match '^https?://'",
+        "missing-protocol-version.invalid.trust.md": "'version' is a required property",
+        "mutable-subject-no-version.invalid.trust.md": "is not valid under any of the given schemas",
+        "supersession-cycle.invalid.trust.md": "supersession cycle detected",
+    }
+    assert {path.name for path in fixture_dir.glob("*.invalid.trust.md")} == set(expected)
+    for name, diagnostic in expected.items():
+        errors, _, _ = validate(fixture_dir / name)
+        assert any(diagnostic in error for error in errors), name
