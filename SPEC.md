@@ -1,159 +1,154 @@
-# TRUST.md formal specification v0.3
+# TRUST.md formal specification v0.4
 
-**Status:** release candidate · **Date:** 2026-07-21 · **License:** Apache-2.0
+**Status:** release candidate; experimental proposed convention · **Date:**
+2026-07-21 · **License:** Apache-2.0
 
-This specification defines the document shape and validation contract. The
-semantic rules in [MODEL.md](MODEL.md) are normative and incorporated here by
-reference.
+This specification defines the v0.4 document and validation contract. The
+semantics in [MODEL.md](MODEL.md) are normative and incorporated by reference.
 
-## 1. Location and discovery
+## 1. Location and document format
 
-The canonical repository filename is `TRUST.md`. The canonical served path is
-`/trust.md`. Consumers SHOULD attempt, in order:
+The canonical repository filename is `TRUST.md`; the canonical served path is
+`/trust.md`. Consumers SHOULD try `/trust.md`, `/TRUST.md`, then
+`/.well-known/trust.md`. Servers SHOULD use `text/markdown; charset=utf-8`.
 
-1. `/trust.md`
-2. `/TRUST.md`
-3. `/.well-known/trust.md`, which SHOULD redirect to `/trust.md`
+A declaration MUST be UTF-8 Markdown beginning with YAML front matter between
+`---` delimiters. Non-empty prose MUST follow. `trust_md_version` MUST be a
+quoted string. Exact dispatch supports `"0.1"`, `"0.2"`, `"0.3"`, and `"0.4"`;
+another value is an unsupported-version error.
 
-Servers SHOULD treat the path case-insensitively and SHOULD serve
-`text/markdown; charset=utf-8`.
+## 2. Common fields
 
-## 2. Document format
-
-A declaration MUST be UTF-8 Markdown whose first element is YAML front matter
-delimited by `---`. Non-empty human-readable prose MUST follow the closing
-delimiter.
-
-`trust_md_version` MUST be a quoted string. A validator MUST dispatch to the
-schema for that exact version. Supported versions are `"0.1"`, `"0.2"`, and
-`"0.3"`; any other value is an unsupported-version error.
-
-## 3. Required common fields
+Every v0.4 declaration requires:
 
 | Field | Contract |
 |---|---|
-| `trust_md_version` | Exact supported version string |
-| `title` | Non-empty human-readable title |
-| `description` | Non-empty scope description |
-| `canonical` | Absolute HTTP(S) URL, conventionally ending `/trust.md` |
-| `license` | Non-empty license identifier for the declaration |
+| `trust_md_version` | Exactly `"0.4"` |
+| `title`, `description` | Non-empty human-readable strings |
+| `canonical` | Absolute HTTP(S) URL |
+| `license` | Non-empty declaration license identifier |
 | `companions` | Mapping of root-relative paths or `null` |
-| `produced_by.humans` | At least one named human with a role |
-| `produced_by.agents` | Sequence, empty when no agents contributed |
-| `governance` | Source of truth, citation, review, correction, and conflict policies |
-| `epistemic_model` | Categories and the declared version's support model |
+| `produced_by` | At least one named human; zero or more attributable agents |
+| `governance` | Source-of-truth, citation, review, correction, and conflict policies |
+| `epistemic_model` | Categories and five ordered support bands |
+| `subjects` | Non-empty subject registry |
 | `last_reviewed` | ISO `YYYY-MM-DD` date |
 
-Each agent MUST provide `name`, `role`, and `oversight`, where oversight is
-`human-reviewed`, `human-in-the-loop`, `automated`, or `none`. ORCID values,
-when present, MUST match the canonical 16-character format.
+Agents require `name`, `role`, and `oversight`. ORCID values use the canonical
+16-character form. Unknown fields do not fail conformance; validators report a
+notice. Private extensions SHOULD use `x_`.
 
-Unknown fields MUST NOT cause conformance failure. Validators MUST ignore them
-and emit a notice; private extensions SHOULD begin `x_`.
+## 3. Epistemic model
 
-## 4. v0.3 epistemic model
+`epistemic_model` contains one or more categories and exactly five ascending
+support bands: `speculative`, `tentative`, `moderate`, `high`, `very-high`.
+Meanings concern evidence support and do not infer support from category.
 
-`epistemic_model` MUST contain one or more `categories` and exactly five
-`support_bands`, in ascending support order:
+An optional confidence scale declares integer range `[0, 100]`, category
+independence, and `not_probability: true`. If band ranges are present, they
+cover 0–100 contiguously.
 
-`speculative`, `tentative`, `moderate`, `high`, `very-high`.
+## 4. Subject registry
 
-Each category has `id`, `label`, and `definition`. Each band has `id`, `label`,
-and `meaning`. Meanings MUST concern evidence support only and MUST NOT infer
-support from statement type.
+Each `subjects[]` item requires:
 
-### 4.1 Optional numeric refinement
+- a locally unique `id`;
+- `type`: a standard type or an `x_` extension;
+- an absolute HTTP(S) `identifier`;
+- exactly one of a non-empty `version` or a `snapshot` containing an immutable
+  URL and validated digest.
 
-`confidence_scale` is optional. When present it MUST declare:
+`subjects` has at least one item. `assessments` may be absent or empty, so an
+evidence object with no assessment remains representable.
 
-```yaml
-type: "integer"
-range: [0, 100]
-independent_of_category: true
-not_probability: true
-```
+## 5. Assessments
 
-Every support band then MUST have a contiguous inclusive `range`; together the
-ranges MUST cover 0 through 100 exactly. A single-point range such as
-`100-100` is valid. The integer is an ordinal refinement, not a probability.
+Each `assessments[]` item requires:
 
-### 4.2 Dimensions
+- unique absolute `series_id` and version-specific `id` plus non-empty
+  `version`;
+- `subject`, resolving to exactly one local subject;
+- `assessed_by.humans` and `assessed_by.agents` arrays;
+- absolute protocol `identifier` and non-empty protocol `version`;
+- offset ISO 8601 `assessed_at`;
+- `review_status`, declared `independence`, lifecycle `status`, and
+  `limitations`.
 
-`dimensions` is optional. Its standard fields and values are:
+The `(series_id, version)` pair is unique. Version-specific IDs are immutable.
+An optional `purpose` scopes interpretation. `fitness_for_purpose` requires
+`purpose`; `conditionally-suitable` also requires non-empty `conditions`.
 
-- `evidence_support`: `none | contested | partial | indirect | direct`
-- `review_status`: `unreviewed | agent-reviewed | human-reviewed | adjudicated`
-- `calibration`: `understated | matched | overstated`
-- `source_integrity`: `unverified | partially-verified | verified`
+Standard dimensions are `evidence_support`, `calibration`, and
+`source_integrity`. `review_status`, citations, downloads, reuse, popularity,
+or other impact metrics are prohibited as dimensions. Missing-state values are
+`not-assessed` and `not-applicable`; absence and assessed-low values remain
+different states.
 
-Each dimension also permits `not-assessed` and `not-applicable`. An absent
-dimension is distinct from both. `null` is invalid.
+An optional `numeric_refinement` is an integer from 0 through 100 with
+`not_probability: true`.
 
-## 5. Assessment provenance
+## 6. Basis, provenance, and review
 
-`assessment` is optional. When present it MUST include:
+Basis entries require a relation and absolute identifier and may specify a
+version. Core relations are `informed-by`, `uses-qc-report`, `checked-against`,
+and `derived-from`; extensions begin `x_`.
 
-- `unit`: `repository | artifact | claim | claim-evidence`
-- `review_status`
-- `assessed_by.humans` and `assessed_by.agents`
-- non-empty `protocol`
-- ISO `date`
+An active assessment above `unreviewed` requires at least one basis record.
+`human-reviewed` requires a named human. `adjudicated` requires a named human,
+plus disagreement and resolution URLs. `agent-reviewed` may not be presented as
+human review.
 
-Any reviewed status requires an identifiable assessor, protocol, and date.
-`human-reviewed` requires a human assessor. `adjudicated` additionally requires
-`disagreement` and `resolution`. `independent_review: true` requires a named
-human reviewer not listed in `produced_by.humans`.
+Independence values are declarations, not verified booleans. The validator
+checks structural provenance but cannot establish actual independence or
+review quality.
 
-For `unit: claim-evidence`, `companions.claim_records` MUST point to an external
-record. The pointer does not import external scoring semantics into TRUST.md.
+## 7. Lifecycle and coexistence
 
-## 6. Summaries and artifacts
+Lifecycle states are `active`, `superseded`, `withdrawn`, and `retracted`.
+Every non-active lifecycle version requires `supersedes` and
+`lifecycle_reason`. A local supersession link resolves to the same `series_id`
+and subject, points backward to an existing assessment version, and forms no
+cycle. External immutable backward links may be declared but cannot be fully
+verified locally.
 
-`corpus`, `artifacts`, and `limitations` are optional. No aggregate is
-mandatory.
+Conflicting assessments are valid and remain separate. A top-level `corpus` or
+other aggregate across assessments is prohibited. `summary` may occur only
+inside one assessment and must declare `scope: assessment`.
 
-`band_distribution` contains non-negative counts by canonical band.
-`median_band`, when present, MUST agree with the distribution. For an even
-population whose central observations differ, the lower-support band wins.
+## 8. Impact and extensions
 
-`average_trust` is deprecated but valid. Validators emit a notice. Numeric
-averages MUST NOT be described as probabilities or as validated cardinal
-measurements.
+Top-level `impact` may contain non-negative citation, download, or reuse counts
+with an offset measurement time and source. Impact data and extension metrics
+must not influence dimensions or fitness conclusions.
 
-Artifact entries MUST have a root-relative `path` and MAY report claim counts,
-band summaries, and dimensions. Claim records MAY be summarized in an `x_`
-extension or owned by a documented inline encoding.
+Extensions preserve domain-specific information but do not change the
+normative meaning of standard fields.
 
-## 7. Validation behavior
+## 9. Validation behavior
 
-Conforming validators MUST:
+A conforming validator MUST:
 
-1. reject invalid UTF-8, missing front matter, invalid YAML, or missing prose;
-2. require a quoted supported version and dispatch to its frozen schema;
-3. enforce JSON Schema draft 2020-12 including URI/date formats;
-4. enforce v0.3 band ordering, optional numeric coverage, median, assessment,
-   independence, adjudication, and external-relation rules;
-5. distinguish errors, warnings, and notices;
-6. never rewrite or migrate a declaration silently.
+1. reject invalid UTF-8, front matter, YAML, or missing prose;
+2. require a quoted supported version and dispatch exactly;
+3. enforce JSON Schema draft 2020-12 and format checks;
+4. enforce subject identity, assessment identity, provenance, purpose,
+   lifecycle, supersession, aggregation, and impact boundaries;
+5. distinguish errors, warnings, deprecation notices, and ignored-field
+   notices;
+6. remain type-safe on structurally invalid input; and
+7. never rewrite or migrate a declaration.
 
-The reference validator exits 0 when there are no errors, 1 when errors exist,
-and 2 for usage or missing dependencies.
+The reference CLI exits 0 with no errors, 1 with errors, and 2 for usage or
+missing dependencies. See [VALIDATION.md](VALIDATION.md).
 
-## 8. Conformance levels
+## 10. Conformance and compatibility
 
-- **Conformant:** all MUST rules for the declared version pass.
-- **Recommended:** Conformant, with no warnings, plus human-confirmed adherence
-  to non-machine-checkable principles.
-- **Extended:** Recommended, with dimensions or claim summaries, `assessment`
-  provenance, and documented inline encoding.
+Passing validation establishes structural conformance only. It is not evidence
+certification and does not validate scientific conclusions. The matrix in
+[CONFORMANCE.md](CONFORMANCE.md) identifies machine and human obligations.
 
-See [CONFORMANCE.md](CONFORMANCE.md) for the machine/human review boundary.
-
-## 9. Compatibility
-
-Schemas under `schema/v0.1/` and `schema/v0.2/` are frozen. Version 0.3 is
-additive; it does not reinterpret declarations that still declare an earlier
-version. Deprecations and unknown fields are notices, not errors. Breaking
-removal of legacy fields is deferred to a future v1.0. The distributed schema
-identifiers are pinned to the immutable `v0.3.0-rc.1` release bundle; the URLs
-become resolvable when that tag is published from verified merged `main`.
+Schemas under `schema/v0.1/`, `schema/v0.2/`, and `schema/v0.3/` are frozen.
+They retain their released meanings. v0.4 is dispatched only for declarations
+that explicitly quote `trust_md_version: "0.4"`. Schema identifiers for v0.4
+are pinned to the immutable `v0.4.0-rc.1` distribution and become resolvable
+only after that tag is created from verified merged `main`.

@@ -227,9 +227,30 @@ def test_root_template_is_valid_and_contains_no_assessment_claims():
     assert notices == []
     yaml_text, _ = split_front_matter(template.read_text(encoding="utf-8"))
     data = yaml.safe_load(yaml_text)
+    assert data["trust_md_version"] == "0.4"
+    assert data["subjects"]
+    assert data["assessments"] == []
     assert "assessment" not in data
     assert "dimensions" not in data["epistemic_model"]
     assert "corpus" not in data
+
+
+def test_v04_release_documentation_and_citation_are_aligned():
+    for name in (
+        "README.md",
+        "MODEL.md",
+        "SPEC.md",
+        "MIGRATION.md",
+        "CONFORMANCE.md",
+        "RELEASE_NOTES_v0.4.0-rc.1.md",
+    ):
+        text = (ROOT / name).read_text(encoding="utf-8")
+        assert "v0.4" in text or "0.4" in text, name
+
+    citation = yaml.safe_load((ROOT / "CITATION.cff").read_text(encoding="utf-8"))
+    assert citation["version"] == "0.4.0-rc.1"
+    assert citation["date-released"] == "2026-07-21"
+    assert citation["url"].endswith("/releases/tag/v0.4.0-rc.1")
 
 
 def test_v04_schema_is_valid_and_dispatch_is_exact(tmp_path):

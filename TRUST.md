@@ -1,13 +1,13 @@
 ---
-# TRUST.md v0.3 template
+# TRUST.md v0.4 template
 #
-# Every value marked REPLACE is a placeholder, not a real assertion. Optional
-# assessment, dimensions, and corpus blocks are deliberately absent: add them
-# only when the corresponding work has actually been performed.
+# Every REPLACE value is a placeholder, not a real-world assertion. This
+# template identifies a reserved example subject and publishes zero
+# assessments. Add an assessment only after the work and provenance exist.
 
-trust_md_version: "0.3"
-title: "REPLACE — Project Trust & Epistemic Provenance Declaration"
-description: "REPLACE — Describe what knowledge and repository scope this declaration covers."
+trust_md_version: "0.4"
+title: "REPLACE — Project Trust and Epistemic Provenance Declaration"
+description: "REPLACE — Describe the evidence scope covered by this declaration."
 canonical: "https://example.invalid/trust.md"
 license: "REPLACE-WITH-SPDX-ID"
 
@@ -23,8 +23,8 @@ produced_by:
 governance:
   source_of_truth: "REPLACE — Identify the authoritative record."
   no_fabricated_citations: true
-  review_policy: "REPLACE — Describe the review actually performed."
-  correction_policy: "REPLACE — Describe correction and versioning behavior."
+  review_policy: "REPLACE — Describe how assessment review is declared."
+  correction_policy: "REPLACE — Describe append-only correction and versioning."
   conflict_of_interest: "REPLACE — Declare relevant interests or state that none are declared."
 
 epistemic_model:
@@ -41,16 +41,25 @@ epistemic_model:
     - {id: "high", label: "High", meaning: "Cited evidence supports the claim with minor interpretation."}
     - {id: "very-high", label: "Very high", meaning: "Direct, verifiable support in primary evidence."}
 
-limitations:
-  - "Template values marked REPLACE are placeholders; this file is not a completed assessment."
+subjects:
+  - id: "subject-001"
+    type: "evidence-record"
+    identifier: "https://example.invalid/evidence/REPLACE"
+    version: "REPLACE-WITH-EXACT-VERSION"
 
-# Replace with the date on which your completed declaration was reviewed.
+assessments: []
+
+limitations:
+  - "Template values marked REPLACE are placeholders; this file publishes no assessment."
+
+# Replace with the date on which the completed declaration was reviewed.
 last_reviewed: "2026-07-21"
 ---
 
-# TRUST.md template — replace all placeholders
+# TRUST.md v0.4 template — replace all placeholders
 
-This is an unassessed template. It does not claim that a review occurred and it
-does not contain assessment results, corpus statistics, or fictional reviewer
-provenance. Replace every value marked `REPLACE`, describe the project for human
-readers, and add optional assessment fields only when their provenance is real.
+This template is deliberately unassessed. It contains no assessment result,
+fitness conclusion, review claim, independence claim, impact metric, or
+fictional reviewer. Replace every `REPLACE` value, identify the exact evidence
+subject, and add independently versioned assessments only when their protocol,
+basis, assessors, time, lifecycle, and limitations are real and inspectable.

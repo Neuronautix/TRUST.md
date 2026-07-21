@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use TRUST.md, please cite this release candidate."
+title: "TRUST.md: contextual and attributable evidence assessments"
+type: software
+authors:
+  - family-names: "Huzard"
+    given-names: "Damien"
+version: "0.4.0-rc.1"
+date-released: "2026-07-21"
+license: Apache-2.0
+repository-code: "https://github.com/Neuronautix/TRUST.md"
+url: "https://github.com/Neuronautix/TRUST.md/releases/tag/v0.4.0-rc.1"
+abstract: >-
+  TRUST.md is an experimental proposed convention for publishing exact evidence
+  subjects and contextual, attributable, independently versioned assessments.
+keywords:
+  - evidence
+  - provenance
+  - assessment
+  - scientific metadata
+  - trust
