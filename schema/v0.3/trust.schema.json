@@ -151,7 +151,7 @@
             "agents": {"type": "array", "items": {"$ref": "#/$defs/agent"}}
           }
         },
-        "protocol": {"type": "string"},
+        "protocol": {"type": "string", "minLength": 1},
         "date": {"type": "string", "format": "date"},
         "independent_review": {"type": "boolean"},
         "supersedes": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
