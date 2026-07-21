@@ -1,110 +1,160 @@
-# TRUST.md v0.3 normative model
+# TRUST.md v0.4 normative model
 
-This document defines the semantic contract implemented by the v0.3 schema,
-validator, examples, and specification. The decision record in `DECISIONS.md`
-explains why these choices were made.
+This document defines the semantic contract implemented by the v0.4 schema,
+validator, examples, and specification. `V0.4_MODEL.md` preserves the accepted
+design and decision record.
 
-The key words **MUST**, **MUST NOT**, **SHOULD**, and **MAY** are normative.
+TRUST.md v0.4 is an experimental proposed convention. The key words **MUST**,
+**MUST NOT**, **SHOULD**, and **MAY** are normative.
 
-## Assessment units
+## Evidence subjects and assessments
 
-An assessment declares exactly one `unit`:
+An evidence subject and a trust assessment are distinct, independently
+versioned objects. Subjects preserve identity, version, provenance, factual QC
+information, and their own lifecycle outside TRUST.md. Assessments interpret
+inspectable information under a declared protocol and context.
 
-- `repository` — the declaration as a whole; this is the default.
-- `artifact` — one document or other repository artifact.
-- `claim` — one identified claim. The manifest MAY summarize these records,
-  while the inline encoding owns the individual records.
-- `claim-evidence` — one claim–evidence relation. These records MUST remain in
-  an external companion referenced by `companions.claim_records`; TRUST.md does
-  not define citation-level scoring.
+Every declaration MUST contain a non-empty `subjects` registry. Each subject
+has a local `id`, a type, an absolute HTTP(S) identifier, and exactly one
+identity constraint:
 
-A claim assessment attaches to the claim and MUST NOT be copied automatically
-to its citations or claim–evidence relations. Repository-only adoption remains
-fully conformant.
+- a non-empty explicit `version`; or
+- an immutable snapshot URL plus a SHA-256, SHA-384, or SHA-512 digest.
 
-## Ordinal evidence-support bands
+The registry may contain evidence with no assessment. Referencing or updating
+an assessment MUST NOT mutate the subject.
 
-The five bands are the primary assessment semantics, ordered from least to
-most support:
+## Plural assessment identity
 
-1. `speculative` — little or no direct evidentiary support.
-2. `tentative` — limited support with substantial interpretive distance.
-3. `moderate` — partial or indirect support from cited evidence.
-4. `high` — cited evidence supports the claim with minor interpretation.
-5. `very-high` — direct, verifiable support in primary evidence.
+`assessments` is optional and may be empty. Each assessment MUST identify:
 
-An optional integer from 0 through 100 MAY refine a judgement inside its band.
-It is an ordinal author or assessor judgement, **not a probability**, a
-percentage chance of truth, or a cardinal measurement. Categories and support
-bands are independent.
+- `series_id`, the stable assessment lineage;
+- `id`, the immutable identifier for this released version;
+- `version`, the version label;
+- `subject`, a local subject-registry ID.
 
-`band_distribution` is the preferred corpus summary. `median_band` MAY be
-reported; when an even population has different central bands, it MUST use the
-lower-support band. `average_trust` remains valid for compatibility but is
-deprecated. No aggregate is required.
+Assessment IDs and `(series_id, version)` pairs MUST be unique. Different
+communities, purposes, protocols, or assessors MAY publish separate assessments
+of the same subject. Conflicting assessments remain separate and inspectable;
+storage order does not make one canonical.
 
-## Dimensions
+## Dimensions and missing states
 
-Dimensions MUST NOT be summed or treated as compensatory scores.
+Standard assessment dimensions are evidence support, calibration, and source
+integrity. Review status is provenance and MUST NOT appear as a dimension.
+Dimensions are not summed, weighted, or converted into a universal score.
 
-| Dimension | Values, low to high where ordered | Meaning |
-|---|---|---|
-| `evidence_support` | `none`, `contested`, `partial`, `indirect`, `direct` | How directly and strongly evidence supports the statement |
-| `review_status` | `unreviewed`, `agent-reviewed`, `human-reviewed`, `adjudicated` | Highest review process actually completed |
-| `calibration` | `understated`, `matched`, `overstated` | Whether wording matches the available evidence; not a claim that the scale itself is calibrated |
-| `source_integrity` | `unverified`, `partially-verified`, `verified` | Citation existence, accuracy, and support; never author, institution, or venue prestige |
+These states remain distinct:
 
-Traceability is recorded in `assessment` provenance and is not scored.
-Robustness and transferability require external expert appraisal and are not
-core dimensions; a declaration MAY reference such a protocol or use an `x_`
-extension.
+- absent: no statement was made;
+- `not-assessed`: the dimension was explicitly not assessed;
+- `not-applicable`: it does not apply in the declared context;
+- an ordinary low value such as `none`, `overstated`, or `unverified`: a real
+  assessment result.
 
-## Missing data
+An optional integer `numeric_refinement` MAY refine an assessment from 0
+through 100 only when `not_probability: true`. It is not a probability or
+validated cardinal measurement.
 
-These four states MUST remain distinct:
+## Purpose and fitness for purpose
 
-- An absent field means no assessment and makes no statement.
-- `not-assessed` means the dimension was considered and deliberately not
-  assessed.
-- `not-applicable` means the dimension does not apply to the declared unit.
-- The lowest ordinary value (`none`, `unreviewed`, or `unverified`) is a real
-  assessment result and MUST NOT be used as a missing-value default.
+A descriptive assessment MAY omit `purpose`. A `fitness_for_purpose`
+conclusion MUST name its purpose and uses one of:
 
-`null` is not an assessment value. It remains valid only in fields that
-explicitly allow it, such as companion pointers and `supersedes`.
+- `suitable`;
+- `conditionally-suitable`;
+- `not-suitable`;
+- `not-assessed`;
+- `not-applicable`.
 
-## Review provenance
+`conditionally-suitable` requires explicit conditions. A conclusion for one
+purpose MUST NOT imply suitability for another purpose.
 
-An `assessment` records `unit`, `review_status`, `assessed_by`, `protocol`, and
-`date`. Any status above `unreviewed` MUST have a non-empty assessor, protocol,
-and timestamp/date.
+## Protocol and assessment basis
 
-`human-reviewed` requires an identifiable human assessor. Multiple agents can
-reach only `agent-reviewed`. `adjudicated` requires an identifiable human
-adjudicator, a documented disagreement, and a `resolution` reference.
+Every assessment MUST identify an absolute protocol URL and a non-empty
+protocol version. Domain-specific criteria belong in the linked protocol or an
+`x_` extension, not in a universal TRUST.md rubric.
 
-If `independent_review` is true, at least one named human reviewer MUST be
-independent of every contributor named in `produced_by.humans`. The declaration
-is responsible for the truth of that assertion; validators check only the
-declarable identity condition.
+Basis relations use the small core vocabulary `informed-by`, `uses-qc-report`,
+`checked-against`, and `derived-from`, or an `x_` relation. Every active reviewed
+assessment MUST link at least one inspectable basis record. Conformance checks
+the declaration, not whether the record is scientifically adequate.
 
-## Extensibility and casing
+## Provenance, review, and independence
 
-Unknown fields MUST be ignored for conformance and reported as notices.
-Private extensions SHOULD use an `x_` prefix. Extension fields MUST NOT change
-the meaning of standard fields.
+Every assessment records human and automated assessors, an offset ISO 8601
+`assessed_at` datetime, `review_status`, `independence`, status, and limitations.
 
-The canonical repository filename is `TRUST.md`. The canonical web path is
-`/trust.md`; discovery order is `/trust.md`, `/TRUST.md`, then a redirect from
-`/.well-known/trust.md`.
+Review status is `unreviewed`, `agent-reviewed`, `human-reviewed`, or
+`adjudicated`. Agent agreement is not human review. Human-reviewed and
+adjudicated states require identifiable human provenance; adjudication also
+requires inspectable disagreement and resolution links.
 
-## Conformance
+Independence is a declared state: `not-declared`,
+`declared-not-independent`, `declared-partially-independent`, or
+`declared-independent`. A validator does not verify the declaration.
 
-- **Conformant:** all MUST rules for the declared version pass.
-- **Recommended:** Conformant with no warnings and all declarable obligations
-  of the ten principles satisfied.
-- **Extended:** Recommended, plus dimensions or claim summaries, an
-  `assessment` provenance block, and a documented inline encoding.
+## Coexistence and aggregation
 
-Machine validators enforce only testable obligations. Scientific validity,
-reviewer competence, and truthfulness remain human responsibilities.
+Assessments MAY coexist even when their conclusions conflict. TRUST.md does not
+require automatic conflict detection or adjudication. Known disagreement
+SHOULD be recorded in limitations or linked records.
+
+A declaration MUST NOT publish a top-level aggregate across assessments. The
+validator MUST NOT average, rank, reconcile, or select them. A summary is
+permitted only inside one assessment with `scope: assessment` and the
+population and protocol made explicit where needed.
+
+## Append-only lifecycle
+
+Released assessment versions are append-only. A correction or lifecycle event
+creates a new immutable version in the same `series_id`, linking backward with
+`supersedes`. The prior version remains discoverable. Supersession MUST remain
+on the same subject and in the same series and MUST NOT form a cycle.
+
+Lifecycle status is:
+
+- `active`: the publisher's current assessment statement;
+- `superseded`: a later assessment version replaces the prior one;
+- `withdrawn`: removed from current use without necessarily asserting
+  invalidity;
+- `retracted`: explicitly repudiated by its publisher.
+
+Superseded, withdrawn, and retracted lifecycle versions require a reason and a
+backward link. Assessment lifecycle never changes the evidence subject's
+lifecycle.
+
+## Time and migration precision
+
+Native v0.4 assessments use an offset datetime. A migrated v0.3 day is anchored
+at `00:00:00Z` and declares `assessed_at_precision: date`, preserving that the
+original time and timezone were unknown.
+
+## Impact is not quality
+
+Citations, downloads, reuse counts, prestige, and popularity MAY be published
+as scoped impact metadata. They MUST NOT populate, modify, weight, or justify
+quality dimensions or fitness conclusions.
+
+## Validation boundary
+
+Schema and CLI conformance validate structure, identifiers, required
+provenance, and declared relationships. They do not:
+
+- establish the truth of evidence;
+- certify methodological quality or assessor competence;
+- prove independence, reproducibility, or replication;
+- validate downstream scientific conclusions;
+- convert agent agreement into human review; or
+- make TRUST.md an authority over evidence.
+
+## Compatibility and extensions
+
+Versions 0.1, 0.2, and 0.3 retain frozen schemas and semantics. Exact dispatch
+uses the quoted `trust_md_version`; v0.3's singular `assessment` is not
+reinterpreted as plural v0.4 `assessments`. Migration is explicit and never
+automatic.
+
+Unknown fields are ignored for conformance and reported as notices. Private
+extensions SHOULD use `x_` and MUST NOT alter standard-field meaning.

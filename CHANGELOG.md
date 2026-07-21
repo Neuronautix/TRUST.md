@@ -6,6 +6,45 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.4.0-rc.1] — 2026-07-21
+
+### Added
+
+- A required subject registry supporting evidence with zero, one, or multiple
+  independently versioned assessments.
+- Stable assessment series and version IDs, exact subject identity, versioned
+  protocols, basis links, purpose-scoped fitness, attributable assessors,
+  declared independence, and append-only lifecycle records.
+- Coexistence of conflicting assessments without automatic adjudication or
+  top-level aggregation.
+- Frozen v0.4 schema, exact dispatch, semantic validation, public examples,
+  invalid fixtures, provenance round-trip coverage, and an explicit v0.3-to-v0.4
+  migration pair.
+- Citation metadata, examples index, validator guide, and release-candidate
+  notes.
+
+### Changed
+
+- Evidence subjects and assessments are now distinct objects.
+- Review status is assessment provenance rather than a quality dimension.
+- Assessment time uses an offset ISO datetime; migrated day-only values retain
+  precision with `assessed_at_precision: date`.
+- The root template now identifies an exact placeholder subject and publishes
+  an empty assessment collection.
+
+### Compatibility
+
+- v0.1, v0.2, and v0.3 schemas and semantics remain frozen.
+- v0.3 singular assessments are not reinterpreted under plural v0.4 semantics.
+- Migration remains explicit and never rewrites the source declaration.
+
+### Safety boundary
+
+- Conformance does not certify evidence, methodological quality, independence,
+  reproducibility, or scientific conclusions.
+- Citation, download, reuse, prestige, and popularity metrics cannot determine
+  assessment dimensions or fitness conclusions.
+
 ## [0.3.0-rc.1] — 2026-07-21
 
 ### Added
@@ -99,3 +138,4 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 [0.2]: https://github.com/Neuronautix/TRUST.md/releases/tag/v0.2
 [0.1]: https://github.com/Neuronautix/TRUST.md/releases/tag/v0.1
 [0.3.0-rc.1]: https://github.com/Neuronautix/TRUST.md/releases/tag/v0.3.0-rc.1
+[0.4.0-rc.1]: https://github.com/Neuronautix/TRUST.md/releases/tag/v0.4.0-rc.1
