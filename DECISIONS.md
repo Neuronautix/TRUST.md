@@ -157,3 +157,64 @@ The spec makes no claim that any scale or dimension is *calibrated* — there is
 no benchmark. The word "calibration" appears only as the name of the optional
 wording-vs-evidence dimension (whose viability for self-declaration is itself
 an open question, plan §12.3), never as a validity claim.
+
+---
+
+## D-013 — v0.4 separates subjects from plural assessments
+
+**Status: Accepted for v0.4 implementation (2026-07-21).**
+
+v0.4 requires a `subjects` registry and permits zero or more independently
+versioned assessments. A subject has an authoritative identifier and either an
+explicit version or immutable snapshot/digest. Each assessment has a stable
+`series_id`, an immutable version-specific `id`, and a `version`.
+
+Evidence must remain representable without an assessment, and multiple
+communities must be able to assess the same immutable subject without mutating
+it or making any assessment canonical.
+
+## D-014 — v0.4 context, basis, and provenance
+
+**Status: Accepted for v0.4 implementation (2026-07-21).**
+
+Review status is provenance, not a dimension. Purpose is optional for a
+descriptive assessment and mandatory for a fitness conclusion. Fitness uses
+`suitable`, `conditionally-suitable`, or `not-suitable`. Core basis relations
+are `informed-by`, `uses-qc-report`, `checked-against`, and `derived-from`.
+Every active reviewed assessment links at least one inspectable basis record.
+Independence uses declared states rather than a boolean.
+
+These fields expose who made a contextual interpretation, under which
+protocol, for which use, and from what inspectable information without
+implying that conformance verifies the science or assessor independence.
+
+## D-015 — v0.4 lifecycle, conflict, and aggregation
+
+**Status: Accepted for v0.4 implementation (2026-07-21).**
+
+Assessment versions are append-only. `active`, `superseded`, `withdrawn`, and
+`retracted` are distinct states. Withdrawal removes an assessment from current
+use without necessarily asserting invalidity; retraction explicitly
+repudiates it. Conflicting assessments may coexist without automatic detection
+or adjudication. Top-level aggregation across assessments is prohibited; only
+explicitly assessment-scoped summaries are permitted.
+
+Correction history and disagreement must stay discoverable. Collapsing
+assessments would erase their purposes, protocols, provenance, and limitations
+and could create a misleading universal score.
+
+## D-016 — v0.4 assessment time is a datetime
+
+**Status: Accepted for v0.4 implementation (2026-07-21).**
+
+v0.4 uses an offset-aware ISO 8601 `assessed_at` datetime. A migrated v0.3 date
+uses a serialization anchor plus `assessed_at_precision: date` so migration
+does not claim unavailable time or timezone precision.
+
+Datetimes support ordered lifecycle records, while the explicit precision
+marker preserves the information content of historical dates.
+
+The complete accepted v0.4 semantic contract and field-level migration are in
+[`V0.4_MODEL.md`](V0.4_MODEL.md) and
+[`V0.4_MIGRATION.md`](V0.4_MIGRATION.md). Schema and validator choices are
+deferred to the next sequential implementation PR.
