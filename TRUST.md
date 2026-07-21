@@ -1,68 +1,56 @@
 ---
+# TRUST.md v0.3 template
+#
+# Every value marked REPLACE is a placeholder, not a real assertion. Optional
+# assessment, dimensions, and corpus blocks are deliberately absent: add them
+# only when the corresponding work has actually been performed.
+
 trust_md_version: "0.3"
-title: "My Project — Trust & Epistemic Provenance Declaration"
-description: "How this repository's knowledge is produced, governed, and assessed."
-canonical: "https://myproject.example.org/trust.md"
-license: "CC-BY-4.0"
+title: "REPLACE — Project Trust & Epistemic Provenance Declaration"
+description: "REPLACE — Describe what knowledge and repository scope this declaration covers."
+canonical: "https://example.invalid/trust.md"
+license: "REPLACE-WITH-SPDX-ID"
+
 companions:
   fair: null
+
 produced_by:
   humans:
-    - name: "Project Maintainer"
-      role: "author and accountable signatory"
+    - name: "REPLACE WITH ACCOUNTABLE HUMAN"
+      role: "REPLACE WITH ROLE"
   agents: []
+
 governance:
-  source_of_truth: "The human-approved repository record, not raw model output."
+  source_of_truth: "REPLACE — Identify the authoritative record."
   no_fabricated_citations: true
-  review_policy: "Document the review actually performed; do not infer it from confidence."
-  correction_policy: "Corrections are recorded in version control."
-  conflict_of_interest: "None declared."
+  review_policy: "REPLACE — Describe the review actually performed."
+  correction_policy: "REPLACE — Describe correction and versioning behavior."
+  conflict_of_interest: "REPLACE — Declare relevant interests or state that none are declared."
+
 epistemic_model:
   categories:
-    - id: "cited"
-      label: "Cited fact"
-      definition: "Directly supported by a cited source."
+    - {id: "cited", label: "Cited fact", definition: "Directly supported by a cited source."}
+    - {id: "consensus", label: "Established consensus", definition: "Widely accepted domain knowledge or a standard definition."}
+    - {id: "inference", label: "Inference", definition: "Reasoned from one or more sources rather than stated verbatim."}
+    - {id: "hypothesis", label: "Hypothesis", definition: "A forward-looking or speculative claim."}
+    - {id: "view", label: "Author view", definition: "An explicit interpretation, position, or normative conclusion."}
   support_bands:
-    - {id: "speculative", label: "Speculative", meaning: "Little or no direct support.", range: "0-29"}
-    - {id: "tentative", label: "Tentative", meaning: "Limited support.", range: "30-49"}
-    - {id: "moderate", label: "Moderate", meaning: "Partial or indirect support.", range: "50-69"}
-    - {id: "high", label: "High", meaning: "Supported with minor interpretation.", range: "70-89"}
-    - {id: "very-high", label: "Very high", meaning: "Direct and verifiable support.", range: "90-100"}
-  confidence_scale:
-    type: "integer"
-    range: [0, 100]
-    independent_of_category: true
-    not_probability: true
-  dimensions:
-    evidence_support: "direct"
-    review_status: "human-reviewed"
-    calibration: "matched"
-    source_integrity: "verified"
-assessment:
-  unit: "repository"
-  review_status: "human-reviewed"
-  assessed_by:
-    humans:
-      - name: "Independent Reviewer"
-        role: "reviewer"
-    agents: []
-  protocol: "Project review protocol identifier or URL"
-  date: "2026-07-21"
-  independent_review: true
-corpus:
-  notes_with_markup: 2
-  total_claims: 4
-  category_distribution: {cited: 4}
-  band_distribution: {speculative: 0, tentative: 0, moderate: 1, high: 1, very-high: 2}
-  median_band: "high"
+    - {id: "speculative", label: "Speculative", meaning: "Little or no direct evidentiary support."}
+    - {id: "tentative", label: "Tentative", meaning: "Limited support with substantial interpretive distance."}
+    - {id: "moderate", label: "Moderate", meaning: "Partial or indirect support from cited evidence."}
+    - {id: "high", label: "High", meaning: "Cited evidence supports the claim with minor interpretation."}
+    - {id: "very-high", label: "Very high", meaning: "Direct, verifiable support in primary evidence."}
+
 limitations:
-  - "Self-declared metadata."
+  - "Template values marked REPLACE are placeholders; this file is not a completed assessment."
+
+# Replace with the date on which your completed declaration was reviewed.
 last_reviewed: "2026-07-21"
 ---
 
-# My Project — Trust & Epistemic Provenance
+# TRUST.md template — replace all placeholders
 
-Replace the illustrative identities, URLs, policies, assessment results, and
-counts above with truthful project data. Remove optional `assessment`,
-`dimensions`, and `corpus` blocks when the information is not yet known; do
-not encode missing work as a low assessment result.
+This is an unassessed template. It does not claim that a review occurred and it
+does not contain assessment results, corpus statistics, or fictional reviewer
+provenance. Replace every value marked `REPLACE`, describe the project for human
+readers, and add optional assessment fields only when their provenance is real.
