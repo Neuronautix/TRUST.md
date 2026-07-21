@@ -1,4 +1,3 @@
-from copy import deepcopy
 from pathlib import Path
 
 import yaml
@@ -100,3 +99,12 @@ def test_deprecated_average_is_only_a_notice(tmp_path):
     errors, _, notices = validate(path)
     assert errors == []
     assert "corpus.average_trust is deprecated; prefer band_distribution" in notices
+
+
+def test_protocol_provenance_round_trips_without_type_loss():
+    yaml_text, _ = split_front_matter(FIXTURE.read_text(encoding="utf-8"))
+    original = yaml.safe_load(yaml_text)["assessment"]
+    round_tripped = yaml.safe_load(yaml.safe_dump(original, sort_keys=False))
+    assert round_tripped == original
+    assert isinstance(round_tripped["independent_review"], bool)
+    assert isinstance(round_tripped["date"], str)
